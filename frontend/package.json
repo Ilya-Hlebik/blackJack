@@ -1,0 +1,41 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vue-cli-service serve",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "vue": "^2.6.11",
+    "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
+    "animate.css": "^4.1.0",
+    "axios": "^0.19.0",
+    "bootstrap": "^4.4.1",
+    "bootstrap-vue": "^2.13.0",
+    "js-cookie": "^2.2.1",
+    "vue-burger-menu": "^2.0.5",
+    "vue-flash-message": "^0.7.2",
+    "vue-gallery-slideshow": "^1.5.0",
+    "vue-resource": "^1.5.1",
+    "vue-router": "^3.1.6",
+    "vue-runtime-helpers": "^1.1.2",
+    "vuex": "^3.1.2",
+    "vuex-persistedstate": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "vue-template-compiler": "^2.6.11",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.1.0",
+    "stylelint": "^11.0.0",
+    "stylelint-config-standard": "^19.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
