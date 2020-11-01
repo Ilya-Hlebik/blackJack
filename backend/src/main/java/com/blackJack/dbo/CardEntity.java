@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartEntity extends  AbstractEntity
+public class CardEntity extends  AbstractEntity
 {
     private String imageUrl;
     private String value;
