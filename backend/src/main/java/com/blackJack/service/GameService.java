@@ -35,7 +35,8 @@ public class GameService
         Collections.shuffle(deck);
 
         return gameRepository.save(
-                new GameEntity(new LinkedHashSet<>(deck), Collections.emptySet(), Collections.emptySet(), 0, 0, false,
+                new GameEntity(new LinkedHashSet<>(deck), Collections.emptySet(), Collections.emptySet(), 0, 0, 0, 0,
+                        false,
                         GameStatus.IN_PROGRESS, false))
                 .getId();
     }
@@ -82,7 +83,9 @@ public class GameService
                     .remove(dealerCard);
             final CardEntity cardEntity = cardService.findByName(dealerCard);
             game.setDealerCards(Collections.singleton(cardEntity));
-            game.setDealerSum(Integer.parseInt(cardEntity.getValue()));
+            final int value = Integer.parseInt(cardEntity.getValue());
+            game.setDealerSum(value);
+            game.setDealerAltSum(value == 11 ? 1 : value);
             save(game);
         }
     }
@@ -105,9 +108,21 @@ public class GameService
                     .collect(Collectors.toSet());
             game.setPlayerCards(collect);
             game.setPlayerSum(getSumFromCard(collect));
+            game.setPlayerAltSum(getAltSumFromCard(collect));
             game.setGameLoaded(true);
             save(game);
         }
+    }
+
+
+    private int getAltSumFromCard(final Set<CardEntity> cardEntities)
+    {
+        return cardEntities.stream()
+                .map(CardEntity::getValue)
+                .map(Integer::parseInt)
+                .map(value -> value == 11 ? 1 : value)
+                .mapToInt(Integer::intValue)
+                .sum();
     }
 
 
@@ -126,20 +141,31 @@ public class GameService
         final GameEntity gameEntity = getGameById(gameId);
         if (!gameEntity.isGameFinished())
         {
-            final int playerSum = gameEntity.getPlayerSum();
-            if (playerSum > 22)
+            final int playerMainSum =
+                    gameEntity.getPlayerSum() > 21 ? gameEntity.getPlayerAltSum() : gameEntity.getPlayerSum();
+            if (playerMainSum > 22)
             {
                 gameEntity.setGameStatus(GameStatus.DEALER_WON);
                 gameEntity.setGameFinished(true);
                 return gameEntity;
             }
             int dealerSum = gameEntity.getDealerSum();
-            while (dealerSum < 17)
+            int dealerAltSum = gameEntity.getDealerAltSum();
+            while (( dealerSum < 17 || dealerAltSum < 17) && (dealerSum < playerMainSum || (dealerAltSum < playerMainSum && dealerSum < 21)))
             {
                 final String nextCard = gameEntity.getDeck()
                         .iterator()
                         .next();
                 final CardEntity cardEntity = cardService.findByName(nextCard);
+                if (Integer.parseInt(cardEntity.getValue()) == 11)
+                {
+                    dealerAltSum = dealerSum + 1;
+                }
+                else
+                {
+                    dealerAltSum += Integer.parseInt(cardEntity
+                            .getValue());
+                }
                 dealerSum += Integer.parseInt(cardEntity
                         .getValue());
                 gameEntity.getDeck()
@@ -148,16 +174,16 @@ public class GameService
                         .add(cardEntity);
             }
             gameEntity.setGameFinished(true);
-
-            final boolean dealerBJ = dealerSum == 21 && gameEntity.getDealerCards()
+            final int dealerMainSum = dealerSum > 21 ? dealerAltSum : dealerSum;
+            final boolean dealerBJ = dealerMainSum == 21 && gameEntity.getDealerCards()
                     .size() == 2;
             final boolean playerBj = GameStatus.PLAYER_BJ.equals(
                     gameEntity.getGameStatus());
-            if (dealerSum < 22 && (dealerSum > playerSum || (dealerBJ && !playerBj)))
+            if (dealerMainSum < 22 && (dealerMainSum > playerMainSum || (dealerBJ && !playerBj)))
             {
                 gameEntity.setGameStatus(GameStatus.DEALER_WON);
             }
-            else if (dealerSum < 22 && dealerSum == playerSum && (dealerBJ == playerBj))
+            else if (dealerMainSum < 22 && dealerMainSum == playerMainSum && (dealerBJ == playerBj))
             {
                 gameEntity.setGameStatus(GameStatus.DRAW);
             }
@@ -166,6 +192,7 @@ public class GameService
                 gameEntity.setGameStatus(GameStatus.PLAYER_WON);
             }
             gameEntity.setGameFinished(true);
+            gameEntity.setDealerAltSum(dealerAltSum);
             gameEntity.setDealerSum(dealerSum);
             save(gameEntity);
         }
@@ -176,7 +203,8 @@ public class GameService
     public GameEntity addCardToPlayer(final String gameId)
     {
         final GameEntity gameEntity = getGameById(gameId);
-        if (!gameEntity.isGameFinished() && getSumFromCard(gameEntity.getPlayerCards()) != 21)
+        if (!gameEntity.isGameFinished() && getSumFromCard(gameEntity.getPlayerCards()) != 21
+                && getAltSumFromCard(gameEntity.getPlayerCards()) != 21)
         {
             final String nextCard = gameEntity.getDeck()
                     .iterator()
@@ -187,8 +215,10 @@ public class GameService
             gameEntity.getPlayerCards()
                     .add(cardEntity);
             final int sumFromCard = getSumFromCard(gameEntity.getPlayerCards());
+            final int altSumFromCard = getAltSumFromCard(gameEntity.getPlayerCards());
             gameEntity.setPlayerSum(sumFromCard);
-            if (sumFromCard > 21)
+            gameEntity.setPlayerAltSum(altSumFromCard);
+            if (sumFromCard > 21 && altSumFromCard > 21)
             {
                 gameEntity.setGameStatus(GameStatus.DEALER_WON);
                 gameEntity.setGameFinished(true);

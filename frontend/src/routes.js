@@ -31,8 +31,6 @@ const routes = [
     component: BlackJack,
     async beforeEnter(from, to, next) {
       if (from.params.id !== "") {
-        /*await store.dispatch('main/loadDealerCards', from.params.id);
-        await store.dispatch('main/loadPlayerCards', from.params.id);*/
         let game = await store.dispatch("main/loadExistingGame", from.params.id);
         if (game.gameStatus === 'PLAYER_BJ'){
           await store.dispatch('main/dealerTurns', from.params.id);

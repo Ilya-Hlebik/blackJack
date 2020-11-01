@@ -28,7 +28,11 @@ public class GameEntity extends AbstractEntity
 
     private int playerSum;
 
+    private int playerAltSum;
+
     private int dealerSum;
+
+    private int dealerAltSum;
 
     private boolean gameLoaded;
 

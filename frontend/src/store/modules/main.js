@@ -30,6 +30,9 @@ export default {
     game(state) {
       return state.game
     },
+    gameId(state){
+      return state.gameId
+    }
   },
   mutations: {
     clearDealerCards(state) {
