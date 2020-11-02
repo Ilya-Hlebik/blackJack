@@ -1,12 +1,6 @@
 package com.blackJack.service;
 
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.enumeration.GameStatus;
@@ -14,6 +8,12 @@ import com.blackJack.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -161,7 +161,7 @@ public class GameService
                 final CardEntity cardEntity = cardService.findByName(nextCard);
                 if (Integer.parseInt(cardEntity.getValue()) == 11)
                 {
-                    dealerAltSum = dealerSum + 1;
+                    dealerAltSum  += 1;
                 }
                 else
                 {
