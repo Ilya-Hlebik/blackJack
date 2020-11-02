@@ -151,7 +151,9 @@ public class GameService
             }
             int dealerSum = gameEntity.getDealerSum();
             int dealerAltSum = gameEntity.getDealerAltSum();
-            while (( dealerSum < 17 || dealerAltSum < 17) && (dealerSum < playerMainSum || (dealerAltSum < playerMainSum && dealerSum < 21)))
+            while (getDealerAverageSum(dealerSum, dealerAltSum) < 17 && (
+                    getDealerAverageSum(dealerSum, dealerAltSum) < playerMainSum
+                            && getDealerAverageSum(dealerSum, dealerAltSum) < 21))
             {
                 final String nextCard = gameEntity.getDeck()
                         .iterator()
@@ -197,6 +199,12 @@ public class GameService
             save(gameEntity);
         }
         return gameEntity;
+    }
+
+
+    private int getDealerAverageSum(final int dealerSum, final int dealerAltSum)
+    {
+        return dealerSum > 21 ? dealerAltSum : dealerSum;
     }
 
 

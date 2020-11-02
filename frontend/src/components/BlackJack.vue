@@ -4,9 +4,9 @@
       <span class="text-danger">{{ dealerSumComputed }}</span>
     </div>
     <div>
+      <img class="carts" v-for="(cart, index) in game.dealerCards" :src="cart.imageUrl" alt="карта1" :key="index">
       <img class="carts" v-show="game.dealerCards.length === 1" src="/backend/storage/files/Gray_back.jpg" alt="карта1"
            key="CB">
-      <img class="carts" v-for="(cart, index) in game.dealerCards" :src="cart.imageUrl" alt="карта1" :key="index">
     </div>
     <div class="statusContainer">
       <div v-show="game.gameFinished" class="status text-success text-capitalize"> {{ game.gameStatus }}
