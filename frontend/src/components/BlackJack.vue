@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <div class="mb-2">
       <span class="text-danger">{{ dealerSumComputed }}</span>
     </div>
@@ -107,7 +107,7 @@
 
   .statusContainer {
     margin-top: 100px;
-    height: 260px;
+    height: 100px;
     display: block;
     justify-content: center;
     align-items: center;

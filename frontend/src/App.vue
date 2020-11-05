@@ -17,6 +17,8 @@
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
+    padding-top:  2%;
+    padding-bottom: 5%;
+    background-image: url("assets/thumb-1920-400217.jpg");
   }
 </style>
