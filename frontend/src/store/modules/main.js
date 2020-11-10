@@ -55,6 +55,29 @@ export default {
     },
     loadExistingGame(state, data) {
       return state.game = data;
+    },
+    loadExistingGameAfterDealerTurns(state, data) {
+/*      debugger
+      let temp = [];
+      data.dealerCards.shift();
+      data.dealerCards.forEach(card => temp.push(card));
+      data.dealerCards = state.game.dealerCards;
+      this.setStateGame(state,data);
+      const timeoutPromise = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
+      const randForTen = async () => {
+        debugger
+        for (let i = 0; i < temp.length; i++) {
+          await timeoutPromise(500);
+          state.game.dealerCards.push(temp[i])
+        }
+      }
+      randForTen();*/
+    },
+    setStateGame(state, data){
+      state.game = data;
+    },
+    addCardToDealerCards(state,data){
+      state.game.dealerCards.push(data);
     }
   },
   actions: {
@@ -78,8 +101,23 @@ export default {
     },
     async dealerTurns(store, data) {
       const response = await axios.post('/backend/game/dealerTurns/' + data);
-      store.commit('loadExistingGame', response.data);
+      store.dispatch("applyDealerCardsWithTimeout",response.data)
       return response.data;
+    },
+    applyDealerCardsWithTimeout(store, data){
+      let temp = [];
+      data.dealerCards.shift();
+      data.dealerCards.forEach(card => temp.push(card));
+      data.dealerCards = store.state.game.dealerCards;
+      store.commit('setStateGame', data);
+      const timeoutPromise = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
+      const randForTen = async () => {
+        for (let i = 0; i < temp.length; i++) {
+          await timeoutPromise(500);
+          store.commit('addCardToDealerCards', temp[i]);
+        }
+      }
+      randForTen();
     },
     async addCardToPlayer(store, data) {
       const response = await axios.post('/backend/game/addCardToPlayer/' + data);

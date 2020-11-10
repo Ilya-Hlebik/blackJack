@@ -1,6 +1,13 @@
 package com.blackJack.service;
 
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.enumeration.GameStatus;
@@ -13,8 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.*;
 
 
 @SpringBootTest
@@ -110,8 +115,8 @@ public class GameServiceTest
         final GameEntity gameResult = gameService.dealerTurns(GAME_ID);
         Assert.assertEquals(GameStatus.DEALER_WON,gameEntity.getGameStatus());
         Assert.assertEquals(4,gameResult.getDealerCards().size());
-        Assert.assertEquals(28,gameResult.getDealerSum());
-        Assert.assertEquals(18,gameResult.getDealerAltSum());
+        Assert.assertEquals(18,gameResult.getDealerSum());
+        Assert.assertEquals(8,gameResult.getDealerAltSum());
     }
 
     @Test
@@ -159,7 +164,7 @@ public class GameServiceTest
     public void dealerTurnsD()
     {
         final GameEntity gameEntity = new GameEntity();
-        final List<String> strings = Arrays.asList("3C", "AC", "AD", "2D", "2C", "7C");
+        final List<String> strings = Arrays.asList("3C", "AC", "AD", "2D", "2C", "7C","3D");
         gameEntity.setDeck(new LinkedHashSet<>(strings));
         gameEntity.setDealerAltSum(2);
         gameEntity.setDealerSum(2);
@@ -203,14 +208,88 @@ public class GameServiceTest
         dealerCart7.setName("7C");
         Mockito.doReturn(dealerCart7).when(cardService).findByName("7C");
 
+        final CardEntity dealerCart8 = new CardEntity();
+        dealerCart8.setValue("3");
+        dealerCart8.setName("3D");
+        Mockito.doReturn(dealerCart8).when(cardService).findByName("3D");
+
 
         Mockito.doReturn(Optional.of(gameEntity)).when(gameRepository).findById(GAME_ID);
 
         final GameEntity gameResult = gameService.dealerTurns(GAME_ID);
 
-        Assert.assertEquals(3,gameResult.getDealerCards().size());
-        Assert.assertEquals(18,gameResult.getDealerSum());
-        Assert.assertEquals(18,gameResult.getDealerAltSum());
-        Assert.assertEquals(GameStatus.PLAYER_WON,gameEntity.getGameStatus());
+        Assert.assertEquals(5,gameResult.getDealerCards().size());
+        Assert.assertEquals(21,gameResult.getDealerSum());
+        Assert.assertEquals(11,gameResult.getDealerAltSum());
+        Assert.assertEquals(GameStatus.DEALER_WON,gameEntity.getGameStatus());
+    }
+
+    @Test
+    public void dealerTurnsE()
+    {
+        final GameEntity gameEntity = new GameEntity();
+        final List<String> strings = Arrays.asList("3C", "AC", "AD", "5D", "4C","5H");
+        gameEntity.setDeck(new LinkedHashSet<>(strings));
+        gameEntity.setDealerAltSum(2);
+        gameEntity.setDealerSum(2);
+        final CardEntity cardEntity = new CardEntity();
+        cardEntity.setName("2D");
+        cardEntity.setValue("2");
+        final Set<CardEntity> cardEntityList = new HashSet<>();
+        cardEntityList.add(cardEntity);
+        gameEntity.setDealerCards(cardEntityList);
+
+        gameEntity.setPlayerSum(19);
+        gameEntity.setPlayerAltSum(19);
+
+        final CardEntity dealerCart2 = new CardEntity();
+        dealerCart2.setValue("3");
+        dealerCart2.setName("3C");
+        Mockito.doReturn(dealerCart2).when(cardService).findByName("3C");
+
+        final CardEntity dealerCart3 = new CardEntity();
+        dealerCart3.setValue("2");
+        dealerCart3.setName("2C");
+        Mockito.doReturn(dealerCart3).when(cardService).findByName("2C");
+
+        final CardEntity dealerCart4 = new CardEntity();
+        dealerCart4.setValue("11");
+        dealerCart4.setName("AC");
+        Mockito.doReturn(dealerCart4).when(cardService).findByName("AC");
+
+        final CardEntity dealerCart5 = new CardEntity();
+        dealerCart5.setValue("11");
+        dealerCart5.setName("AD");
+        Mockito.doReturn(dealerCart5).when(cardService).findByName("AD");
+
+        final CardEntity dealerCart6 = new CardEntity();
+        dealerCart6.setValue("5");
+        dealerCart6.setName("5D");
+        Mockito.doReturn(dealerCart6).when(cardService).findByName("5D");
+
+        final CardEntity dealerCart7 = new CardEntity();
+        dealerCart7.setValue("4");
+        dealerCart7.setName("4C");
+        Mockito.doReturn(dealerCart7).when(cardService).findByName("4C");
+
+        final CardEntity dealerCart8 = new CardEntity();
+        dealerCart8.setValue("3");
+        dealerCart8.setName("3D");
+        Mockito.doReturn(dealerCart8).when(cardService).findByName("3D");
+
+        final CardEntity dealerCart9 = new CardEntity();
+        dealerCart9.setValue("5");
+        dealerCart9.setName("5H");
+        Mockito.doReturn(dealerCart9).when(cardService).findByName("5H");
+
+
+        Mockito.doReturn(Optional.of(gameEntity)).when(gameRepository).findById(GAME_ID);
+
+        final GameEntity gameResult = gameService.dealerTurns(GAME_ID);
+
+        Assert.assertEquals(7,gameResult.getDealerCards().size());
+        Assert.assertEquals(31,gameResult.getDealerSum());
+        Assert.assertEquals(21,gameResult.getDealerAltSum());
+        Assert.assertEquals(GameStatus.DEALER_WON,gameEntity.getGameStatus());
     }
 }

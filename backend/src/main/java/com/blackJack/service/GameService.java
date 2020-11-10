@@ -1,6 +1,13 @@
 package com.blackJack.service;
 
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.GameStep;
@@ -9,9 +16,6 @@ import com.blackJack.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -37,7 +41,7 @@ public class GameService
         return gameRepository.save(
                 new GameEntity(new LinkedHashSet<>(deck), Collections.emptySet(), Collections.emptySet(), 0, 0, 0, 0,
                         false,
-                        GameStatus.IN_PROGRESS, false,Collections.emptyList()))
+                        GameStatus.IN_PROGRESS, false, Collections.emptyList()))
                 .getId();
     }
 
@@ -60,7 +64,9 @@ public class GameService
         getDealerCards(gameId);
         getPlayerCards(gameId);
         final GameEntity gameEntity = getGameById(gameId);
-        GameStep step = new GameStep(gameEntity.getId(), 0, gameEntity.getDealerCards(), gameEntity.getPlayerCards(), gameEntity.getPlayerSum(), gameEntity.getPlayerAltSum(), gameEntity.getDealerSum(), gameEntity.getDealerAltSum());
+        final GameStep step = new GameStep(gameEntity.getId(), 0, gameEntity.getDealerCards(),
+                gameEntity.getPlayerCards(), gameEntity.getPlayerSum(), gameEntity.getPlayerAltSum(),
+                gameEntity.getDealerSum(), gameEntity.getDealerAltSum());
         stepService.save(step);
         gameEntity.setGameSteps(Collections.singletonList(step));
         if (GameStatus.IN_PROGRESS.equals(gameEntity.getGameStatus()) && gameEntity.getPlayerCards()
@@ -152,11 +158,13 @@ public class GameService
                 gameEntity.setGameFinished(true);
                 return gameEntity;
             }
-            int dealerSum = gameEntity.getDealerSum();
+            Integer dealerSum = gameEntity.getDealerSum();
             int dealerAltSum = gameEntity.getDealerAltSum();
-            while (getDealerAverageSum(dealerSum, dealerAltSum) < 17 && (
-                    getDealerAverageSum(dealerSum, dealerAltSum) < playerMainSum
-                            && getDealerAverageSum(dealerSum, dealerAltSum) < 21))
+            while ((getDealerAverageSum(dealerSum, dealerAltSum, playerMainSum, gameEntity) < 17 || dealerAltSum < 17)
+                    && (
+                    !(getDealerAverageSum(dealerSum, dealerAltSum, playerMainSum, gameEntity) > playerMainSum)
+                            && (getDealerAverageSum(dealerSum, dealerAltSum, playerMainSum, gameEntity) < 21
+                            || dealerAltSum < 21)))
             {
                 final String nextCard = gameEntity.getDeck()
                         .iterator()
@@ -164,7 +172,7 @@ public class GameService
                 final CardEntity cardEntity = cardService.findByName(nextCard);
                 if (Integer.parseInt(cardEntity.getValue()) == 11)
                 {
-                    dealerAltSum  += 1;
+                    dealerAltSum += 1;
                 }
                 else
                 {
@@ -178,6 +186,7 @@ public class GameService
                 gameEntity.getDealerCards()
                         .add(cardEntity);
             }
+            dealerSum = recalculateDealerSum(dealerSum, gameEntity);
             gameEntity.setGameFinished(true);
             final int dealerMainSum = dealerSum > 21 ? dealerAltSum : dealerSum;
             final boolean dealerBJ = dealerMainSum == 21 && gameEntity.getDealerCards()
@@ -205,9 +214,30 @@ public class GameService
     }
 
 
-    private int getDealerAverageSum(final int dealerSum, final int dealerAltSum)
+    private Integer recalculateDealerSum(Integer dealerSum, final GameEntity gameEntity)
     {
-        return dealerSum > 21 ? dealerAltSum : dealerSum;
+        final List<CardEntity> cardEntitiesWithAces = gameEntity.getDealerCards()
+                .stream()
+                .filter(cardEntity -> cardEntity.getValue()
+                        .equals("11"))
+                .collect(Collectors.toList());
+        if (cardEntitiesWithAces.size() > 1)
+        {
+            for (final CardEntity ignored : cardEntitiesWithAces)
+            {
+                dealerSum -= 10;
+            }
+            dealerSum += 10;
+        }
+        return dealerSum;
+    }
+
+
+    private int getDealerAverageSum(final int dealerSum, final int dealerAltSum, final int playerMainSum,
+            final GameEntity gameEntity)
+    {
+        final int dealerTempSum = recalculateDealerSum(dealerSum, gameEntity);
+        return dealerTempSum > 21 ? dealerAltSum : dealerTempSum < playerMainSum ? dealerAltSum : dealerTempSum;
     }
 
 
@@ -234,9 +264,15 @@ public class GameService
                 gameEntity.setGameStatus(GameStatus.DEALER_WON);
                 gameEntity.setGameFinished(true);
             }
-            final GameStep lastStep = gameEntity.getGameSteps().stream().max(Comparator.comparingInt(GameStep::getStepNumber)).orElseThrow();
-            GameStep step = new GameStep(gameEntity.getId(), lastStep.getStepNumber() + 1, gameEntity.getDealerCards(), gameEntity.getPlayerCards(), gameEntity.getPlayerSum(), gameEntity.getPlayerAltSum(), gameEntity.getDealerSum(), gameEntity.getDealerAltSum());
-            gameEntity.getGameSteps().add(step);
+            final GameStep lastStep = gameEntity.getGameSteps()
+                    .stream()
+                    .max(Comparator.comparingInt(GameStep::getStepNumber))
+                    .orElseThrow();
+            final GameStep step = new GameStep(gameEntity.getId(), lastStep.getStepNumber() + 1,
+                    gameEntity.getDealerCards(), gameEntity.getPlayerCards(), gameEntity.getPlayerSum(),
+                    gameEntity.getPlayerAltSum(), gameEntity.getDealerSum(), gameEntity.getDealerAltSum());
+            gameEntity.getGameSteps()
+                    .add(step);
             stepService.save(step);
             save(gameEntity);
         }
