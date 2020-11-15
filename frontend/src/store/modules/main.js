@@ -53,31 +53,22 @@ export default {
     needShowStartGameButton(state, data) {
       return state.needShowStartGameButton = data;
     },
-    loadExistingGame(state, data) {
-      return state.game = data;
-    },
-    loadExistingGameAfterDealerTurns(state, data) {
-/*      debugger
-      let temp = [];
-      data.dealerCards.shift();
-      data.dealerCards.forEach(card => temp.push(card));
-      data.dealerCards = state.game.dealerCards;
-      this.setStateGame(state,data);
-      const timeoutPromise = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
-      const randForTen = async () => {
-        debugger
-        for (let i = 0; i < temp.length; i++) {
-          await timeoutPromise(500);
-          state.game.dealerCards.push(temp[i])
-        }
-      }
-      randForTen();*/
-    },
     setStateGame(state, data){
       state.game = data;
     },
     addCardToDealerCards(state,data){
       state.game.dealerCards.push(data);
+    },
+    setDealerSum(state,data){
+      state.game.dealerSum = data.dealerSum;
+      state.game.dealerAltSum = data.dealerAltSum;
+    },
+    setGameStatus(state,data){
+      state.game.gameStatus = data;
+    }
+    ,
+    setGameFinished(state,data){
+      state.game.gameFinished = data;
     }
   },
   actions: {
@@ -95,8 +86,13 @@ export default {
       return response.data;
     },
     async loadExistingGame(store, data) {
+      const response = await axios.get('/backend/game/' + data);
+      store.commit('setStateGame', response.data);
+      return response.data;
+    },
+    async loadNewGame(store, data) {
       const response = await axios.get('/backend/game/get/' + data);
-      store.commit('loadExistingGame', response.data);
+      store.commit('setStateGame', response.data);
       return response.data;
     },
     async dealerTurns(store, data) {
@@ -106,22 +102,31 @@ export default {
     },
     applyDealerCardsWithTimeout(store, data){
       let temp = [];
+      let gameStatus="";
       data.dealerCards.shift();
       data.dealerCards.forEach(card => temp.push(card));
       data.dealerCards = store.state.game.dealerCards;
+      data.dealerSum = store.state.game.dealerSum;
+      data.dealerAltSum = store.state.game.dealerAltSum;
+      gameStatus = data.gameStatus;
+      data.gameStatus = '';
+      data.gameFinished = false;
       store.commit('setStateGame', data);
       const timeoutPromise = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
       const randForTen = async () => {
         for (let i = 0; i < temp.length; i++) {
-          await timeoutPromise(500);
+          await timeoutPromise(700);
           store.commit('addCardToDealerCards', temp[i]);
+          store.commit('setDealerSum', {dealerSum: data.gameSteps[i + data.playerCards.length -1 ].dealerSum,dealerAltSum: data.gameSteps[i + data.playerCards.length -1 ].dealerAltSum});
         }
+        store.commit('setGameStatus', gameStatus);
+        store.commit('setGameFinished', true);
       }
       randForTen();
     },
     async addCardToPlayer(store, data) {
       const response = await axios.post('/backend/game/addCardToPlayer/' + data);
-      store.commit('loadExistingGame', response.data);
+      store.commit('setStateGame', response.data);
       return response.data;
     },
   }

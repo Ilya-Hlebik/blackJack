@@ -4,11 +4,7 @@ package com.blackJack.controller;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.service.GameService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -24,8 +20,13 @@ public class GameController
     }
 
     @GetMapping("/get/{gameId}")
-    public GameEntity gameEntity(@PathVariable final String gameId){
+    public GameEntity getGameWithResults(@PathVariable final String gameId){
         return gameService.getGameWithResults(gameId);
+    }
+
+    @GetMapping("/{gameId}")
+    public GameEntity getGame(@PathVariable final String gameId){
+        return gameService.getGame(gameId);
     }
 
     @PostMapping("/dealerTurns/{gameId}")

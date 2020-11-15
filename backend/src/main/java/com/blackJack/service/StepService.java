@@ -5,6 +5,8 @@ import com.blackJack.repository.StepRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class StepService {
@@ -12,5 +14,9 @@ public class StepService {
 
     public void save(GameStep step) {
         stepRepository.save(step);
+    }
+
+    public void saveAll(List<GameStep> steps) {
+        stepRepository.saveAll(steps);
     }
 }

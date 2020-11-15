@@ -32,6 +32,9 @@ const routes = [
     async beforeEnter(from, to, next) {
       if (from.params.id !== "") {
         let game = await store.dispatch("main/loadExistingGame", from.params.id);
+        if (!game.gameFinished){
+          game = await store.dispatch("main/loadNewGame", from.params.id);
+        }
         if (game.gameStatus === 'PLAYER_BJ'){
           await store.dispatch('main/dealerTurns', from.params.id);
         }

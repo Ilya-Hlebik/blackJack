@@ -1,13 +1,6 @@
 package com.blackJack.service;
 
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.GameStep;
@@ -16,6 +9,9 @@ import com.blackJack.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -148,6 +144,7 @@ public class GameService
     public GameEntity dealerTurns(final String gameId)
     {
         final GameEntity gameEntity = getGameById(gameId);
+        List<GameStep> stepsToSave = new ArrayList<>();
         if (!gameEntity.isGameFinished())
         {
             final int playerMainSum =
@@ -185,6 +182,13 @@ public class GameService
                         .remove(nextCard);
                 gameEntity.getDealerCards()
                         .add(cardEntity);
+                final GameStep lastStep = getLastGameStep(gameEntity);
+                final GameStep step = new GameStep(gameEntity.getId(), lastStep.getStepNumber() + 1,
+                        gameEntity.getDealerCards(), gameEntity.getPlayerCards(), gameEntity.getPlayerSum(),
+                        gameEntity.getPlayerAltSum(), recalculateDealerSum(dealerSum, gameEntity), dealerAltSum);
+                gameEntity.getGameSteps()
+                        .add(step);
+                stepsToSave.add(step);
             }
             dealerSum = recalculateDealerSum(dealerSum, gameEntity);
             gameEntity.setGameFinished(true);
@@ -208,9 +212,17 @@ public class GameService
             gameEntity.setGameFinished(true);
             gameEntity.setDealerAltSum(dealerAltSum);
             gameEntity.setDealerSum(dealerSum);
+            stepService.saveAll(stepsToSave);
             save(gameEntity);
         }
         return gameEntity;
+    }
+
+    private GameStep getLastGameStep(GameEntity gameEntity) {
+        return gameEntity.getGameSteps()
+                .stream()
+                .max(Comparator.comparingInt(GameStep::getStepNumber))
+                .orElseThrow();
     }
 
 
@@ -264,10 +276,7 @@ public class GameService
                 gameEntity.setGameStatus(GameStatus.DEALER_WON);
                 gameEntity.setGameFinished(true);
             }
-            final GameStep lastStep = gameEntity.getGameSteps()
-                    .stream()
-                    .max(Comparator.comparingInt(GameStep::getStepNumber))
-                    .orElseThrow();
+            final GameStep lastStep = getLastGameStep(gameEntity);
             final GameStep step = new GameStep(gameEntity.getId(), lastStep.getStepNumber() + 1,
                     gameEntity.getDealerCards(), gameEntity.getPlayerCards(), gameEntity.getPlayerSum(),
                     gameEntity.getPlayerAltSum(), gameEntity.getDealerSum(), gameEntity.getDealerAltSum());
@@ -277,5 +286,9 @@ public class GameService
             save(gameEntity);
         }
         return gameEntity;
+    }
+
+    public GameEntity getGame(String gameId) {
+        return gameRepository.findById(gameId).orElseThrow();
     }
 }

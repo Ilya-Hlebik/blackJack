@@ -30,7 +30,7 @@
     </div>
     <div>
       <span class="score mr-4">{{ playerSumComputed }}</span>
-      <button class="button mr-1" :disabled="moreDisabled" @click="addCardToPlayer(game.id)"><span>More cards</span>
+      <button class="button mr-1" :disabled="moreDisabled" @click="addCardToPlayer(game.id)"><span>Hit</span>
       </button>
       <button class="button" :disabled="doneDisabled" @click="doneGame"><span>Stand</span></button>
     </div>
@@ -63,7 +63,7 @@
         game: 'game',
       }),
       moreDisabled() {
-        return this.game.gameStatus === 'PLAYER_BJ' || this.game.gameFinished || this.game.playerSum === 21 || this.game.playerAltSum === 21
+        return this.game.gameStatus === 'PLAYER_BJ'|| this.doneClicked  || this.game.gameFinished || this.game.playerSum === 21 || this.game.playerAltSum === 21
       },
       doneDisabled() {
         return this.game.gameStatus === 'PLAYER_BJ' || this.doneClicked || this.game.gameFinished || this.game.playerSum === 21 || this.game.playerAltSum === 21;
@@ -106,7 +106,7 @@
   }
 
   .carts {
-    max-width: 100px;
+    max-width: 6%;
     border-radius: 7px;
     overflow: hidden;
     margin: -10px 0 0 10px;
@@ -118,13 +118,14 @@
     align-items: center;
   }
   .middle-of-field{
-    margin-top: 60px;
-    height: 270px;
+    margin-top: 4%;
+    height: 135px;
+    margin-bottom: 2%;
   }
 
   .status {
     flex: 0 0 120px;
-    margin: 50px auto;
+    margin-bottom: 2%;
     text-align: center;
     text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.3), 1px 1px 0px rgba(0, 0, 0, 0.8);
     color: #333;
@@ -141,18 +142,17 @@
   @import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
 
   .button {
-    width: 200px;
-    height: 50px;
+    width: 100px;
+    height: 40px;
     background: #f3f0f1;
     position: relative;
-    margin-bottom: 25px;
     border-radius: 32px;
     text-align: center;
     cursor: pointer;
     transition: all 0.1s ease-in-out;
 
     span {
-      line-height: 40px;
+      line-height: 30px;
       font-family: "Montserrat", sans-serif;
       font-size: 28px;
       font-weight: bolder;
@@ -169,10 +169,15 @@
         inset 8px 8px 16px rgba(0, 0, 0, 0.1);
         color: #79e3b6;
       }
+      &:disabled {
+        opacity: 0.5;
+      }
     }
   }
 
   .new-game-button {
+    width: 200px;
+    height: 50px;
     span {
       line-height: 40px;
       font-family: "Montserrat", sans-serif;
