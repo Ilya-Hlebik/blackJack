@@ -27,20 +27,18 @@
 </script>
 
 <style lang="scss">
-  @import '../css/animated.css';
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    padding-top:  2%;
-    padding-bottom: 5%;
     height: 100%;
     background-image: url("assets/thumb-1920-400217.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    overflow-x: hidden
   }
   body, html {
     height: 100%;

@@ -5,13 +5,15 @@
     </div>
     <div>
       <transition-group   name="custom-classes-transition"
-                              enter-active-class="animated zoomIn"
-                              leave-active-class="animated zoomOut"mode="out-in">
+                              enter-active-class="animate__animated animate__slideInRight animate__faster"
+                              leave-active-class="animate__animated animate__flipInY " mode="out-in">
         <img class="carts" v-for="(cart, index) in game.dealerCards" :src="cart.imageUrl" alt="карта1" :key="index">
-      </transition-group >
-      <img class="carts" v-show="game.dealerCards.length === 1" src="/backend/storage/files/Gray_back.jpg" alt="карта1"
-           key="CB">
 
+      </transition-group >
+     <transition  name="custom-classes-transition2" leave-active-class="animate__animated animate__flipOutY  animate__faster" mode="out-in">
+        <img class="carts" v-show="game.dealerCards.length === 1" src="/backend/storage/files/Gray_back.jpg" alt="карта1"
+             key="CB">
+      </transition>
     </div>
     <div class="middle-of-field">
       <div class="statusContainer">
@@ -26,7 +28,11 @@
       </router-link>
     </div>
     <div class="mb-5">
+      <transition-group   name="custom-classes-transition"
+                          enter-active-class="animate__animated animate__fadeInTopRight animate__faster"
+                          leave-active-class="animated zoomOut" mode="out-in">
       <img class="carts" v-for="(cart, index) in game.playerCards" :src="cart.imageUrl" alt="карта1" :key="index">
+      </transition-group>
     </div>
     <div>
       <span class="score mr-4">{{ playerSumComputed }}</span>
@@ -76,8 +82,8 @@
       }
     },
     watch: {
-      game(oldVal) {
-        if ((this.game.playerSum === 21 || this.game.playerAltSum === 21) && !this.game.gameFinished) {
+      game(newVal,oldVal) {
+        if ((oldVal.playerSum !==this.game.playerSum || oldVal.playerAltSum !==this.game.playerAltSum)&& (this.game.playerSum === 21 || this.game.playerAltSum === 21) && !this.game.gameFinished) {
           this.doneGame();
         }
       }
@@ -87,20 +93,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-  h3 {
-    margin: 40px 0 0;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
+  @import '../../node_modules/animate.css/animate.css';
   a {
     color: #42b983;
   }
@@ -109,7 +102,7 @@
     max-width: 6%;
     border-radius: 7px;
     overflow: hidden;
-    margin: -10px 0 0 10px;
+    margin: -10px 0 0 -40px;
   }
 
   .statusContainer {
@@ -118,7 +111,7 @@
     align-items: center;
   }
   .middle-of-field{
-    margin-top: 4%;
+    margin-top: 1%;
     height: 135px;
     margin-bottom: 2%;
   }
