@@ -6,6 +6,8 @@ import com.blackJack.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -15,8 +17,8 @@ public class GameController
     private final GameService gameService;
 
     @GetMapping("/new")
-    public String createGame(){
-        return gameService.createGame();
+    public String createGame(final Principal principal){
+        return gameService.createGame(principal);
     }
 
     @GetMapping("/get/{gameId}")
@@ -25,8 +27,8 @@ public class GameController
     }
 
     @GetMapping("/{gameId}")
-    public GameEntity getGame(@PathVariable final String gameId){
-        return gameService.getGame(gameId);
+    public GameEntity getGame(final Principal principal, @PathVariable final String gameId){
+        return gameService.getGame(gameId, principal);
     }
 
     @PostMapping("/dealerTurns/{gameId}")

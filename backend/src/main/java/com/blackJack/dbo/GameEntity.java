@@ -43,5 +43,8 @@ public class GameEntity extends AbstractEntity
     private boolean gameFinished;
 
     @DBRef
+    private User user;
+
+    @DBRef
     private List<GameStep> gameSteps;
 }

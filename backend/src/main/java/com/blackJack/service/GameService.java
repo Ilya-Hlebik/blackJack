@@ -4,12 +4,14 @@ package com.blackJack.service;
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.GameStep;
+import com.blackJack.dbo.User;
 import com.blackJack.enumeration.GameStatus;
 import com.blackJack.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,8 +26,10 @@ public class GameService
 
     private final StepService stepService;
 
+    private final UserService userService;
 
-    public String createGame()
+
+    public String createGame(final Principal req)
     {
         final List<String> deck = cardService.getDeck()
                 .stream()
@@ -33,11 +37,11 @@ public class GameService
                 .filter(s -> !"CB".equals(s))
                 .collect(Collectors.toList());
         Collections.shuffle(deck);
-
+        final User user = userService.findMe(req);
         return gameRepository.save(
                 new GameEntity(new LinkedHashSet<>(deck), Collections.emptySet(), Collections.emptySet(), 0, 0, 0, 0,
                         false,
-                        GameStatus.IN_PROGRESS, false, Collections.emptyList()))
+                        GameStatus.IN_PROGRESS, false,user, Collections.emptyList()))
                 .getId();
     }
 
@@ -144,7 +148,7 @@ public class GameService
     public GameEntity dealerTurns(final String gameId)
     {
         final GameEntity gameEntity = getGameById(gameId);
-        List<GameStep> stepsToSave = new ArrayList<>();
+        final List<GameStep> stepsToSave = new ArrayList<>();
         if (!gameEntity.isGameFinished())
         {
             final int playerMainSum =
@@ -218,7 +222,7 @@ public class GameService
         return gameEntity;
     }
 
-    private GameStep getLastGameStep(GameEntity gameEntity) {
+    private GameStep getLastGameStep(final GameEntity gameEntity) {
         return gameEntity.getGameSteps()
                 .stream()
                 .max(Comparator.comparingInt(GameStep::getStepNumber))
@@ -288,7 +292,8 @@ public class GameService
         return gameEntity;
     }
 
-    public GameEntity getGame(String gameId) {
-        return gameRepository.findById(gameId).orElseThrow();
+    public GameEntity getGame(final String gameId, final Principal principal) {
+        final User user = userService.findMe(principal);
+        return gameRepository.findByUserAndId(user, gameId).orElseThrow();
     }
 }

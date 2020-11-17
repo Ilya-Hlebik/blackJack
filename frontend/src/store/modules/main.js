@@ -1,4 +1,5 @@
 import axios from "axios";
+import {router} from "../../routes";
 
 export default {
 
@@ -86,9 +87,14 @@ export default {
       return response.data;
     },
     async loadExistingGame(store, data) {
-      const response = await axios.get('/backend/game/' + data);
-      store.commit('setStateGame', response.data);
-      return response.data;
+      return await axios.get('/backend/game/' + data)
+          .then(response => {
+            store.commit('setStateGame', response.data)
+            return response.data;
+          })
+          .catch(reason => {router.push('/menu');
+          return null;
+          });
     },
     async loadNewGame(store, data) {
       const response = await axios.get('/backend/game/get/' + data);

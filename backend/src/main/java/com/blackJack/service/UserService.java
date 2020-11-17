@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -149,5 +150,9 @@ public class UserService extends AbstractService<User> {
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    public User findMe(final Principal req) {
+        return ((UserRepository) repository).findByUsername(req.getName());
     }
 }

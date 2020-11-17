@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {router} from "../../routes";
 
 export default {
   namespaced: true,
@@ -72,6 +73,7 @@ export default {
         if (response.status === 200) {
           store.commit('updateLoginInfo', false);
           store.commit('updateRoles', []);
+         router.push('/menu');
         }
       } catch (error) {
         store.commit('updateLoginInfo', false);
