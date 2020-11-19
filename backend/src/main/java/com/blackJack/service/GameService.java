@@ -1,6 +1,15 @@
 package com.blackJack.service;
 
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.GameStep;
@@ -10,10 +19,6 @@ import com.blackJack.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.Principal;
-import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -64,8 +69,8 @@ public class GameService
         getDealerCards(gameId);
         getPlayerCards(gameId);
         final GameEntity gameEntity = getGameById(gameId);
-        final GameStep step = new GameStep(gameEntity.getId(), 0, gameEntity.getDealerCards(),
-                gameEntity.getPlayerCards(), gameEntity.getPlayerSum(), gameEntity.getPlayerAltSum(),
+        final GameStep step = new GameStep(gameEntity.getId(), 0, gameEntity.getPlayerSum(),
+                gameEntity.getPlayerAltSum(),
                 gameEntity.getDealerSum(), gameEntity.getDealerAltSum());
         stepService.save(step);
         gameEntity.setGameSteps(Collections.singletonList(step));
@@ -188,7 +193,7 @@ public class GameService
                         .add(cardEntity);
                 final GameStep lastStep = getLastGameStep(gameEntity);
                 final GameStep step = new GameStep(gameEntity.getId(), lastStep.getStepNumber() + 1,
-                        gameEntity.getDealerCards(), gameEntity.getPlayerCards(), gameEntity.getPlayerSum(),
+                        gameEntity.getPlayerSum(),
                         gameEntity.getPlayerAltSum(), recalculateDealerSum(dealerSum, gameEntity), dealerAltSum);
                 gameEntity.getGameSteps()
                         .add(step);
@@ -282,7 +287,7 @@ public class GameService
             }
             final GameStep lastStep = getLastGameStep(gameEntity);
             final GameStep step = new GameStep(gameEntity.getId(), lastStep.getStepNumber() + 1,
-                    gameEntity.getDealerCards(), gameEntity.getPlayerCards(), gameEntity.getPlayerSum(),
+                    gameEntity.getPlayerSum(),
                     gameEntity.getPlayerAltSum(), gameEntity.getDealerSum(), gameEntity.getDealerAltSum());
             gameEntity.getGameSteps()
                     .add(step);
