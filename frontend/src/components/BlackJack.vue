@@ -110,10 +110,21 @@
     justify-content: center;
     align-items: center;
   }
-  .middle-of-field{
-    margin-top: 1%;
-    height: 135px;
-    margin-bottom: 2%;
+
+  @media screen and (max-width: 1400px) {
+    .middle-of-field {
+      margin-top: 1%;
+      height: 135px;
+      margin-bottom: 2%;
+    }
+  }
+
+  @media screen and(min-width: 1400px) and (max-width: 2000px) {
+    .middle-of-field {
+      margin-top: 1%;
+      height: 250px;
+      margin-bottom: 2%;
+    }
   }
 
   .status {

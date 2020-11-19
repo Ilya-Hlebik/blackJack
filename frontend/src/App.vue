@@ -27,19 +27,28 @@
 </script>
 
 <style lang="scss">
+  @import url('https://fonts.googleapis.com/css?family=Alegreya');
   #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-family: Alegreya, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
     height: 100%;
-    background-image: url("assets/thumb-1920-400217.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
+    overflow-x: hidden;
+    box-shadow: inset 0 0 0 100vw rgba(0, 0, 0, 0.25);
+    background: url("assets/thumb-1920-400217.png") no-repeat center center;
     background-size: cover;
-    overflow-x: hidden
+    color: white;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow .3s ease-out;
   }
+
+  #app:hover {
+    box-shadow: inset 0 0 0 100vw rgba(0, 0, 0, 0.1);
+  }
+
   body, html {
     height: 100%;
   }
