@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mb-2">
+    <div class="mb-2 mt--2">
       <span class="score">{{ dealerSumComputed }}</span>
     </div>
     <div>
@@ -27,18 +27,21 @@
         :to="'/menu'"><span>Start new Game</span>
       </router-link>
     </div>
-    <div class="mb-5">
-      <transition-group   name="custom-classes-transition"
+    <div class="statusContainer">
+      <div></div>
+      <div class="player-carts">
+        <transition-group name="custom-classes-transition"
                           enter-active-class="animate__animated animate__fadeInTopRight animate__faster"
                           leave-active-class="animated zoomOut" mode="out-in">
-      <img class="carts" v-for="(cart, index) in game.playerCards" :src="cart.imageUrl" alt="карта1" :key="index">
-      </transition-group>
-    </div>
-    <div>
-      <span class="score mr-4">{{ playerSumComputed }}</span>
-      <button class="button mr-1" :disabled="moreDisabled" @click="addCardToPlayer(game.id)"><span>Hit</span>
-      </button>
-      <button class="button" :disabled="doneDisabled" @click="doneGame"><span>Stand</span></button>
+          <img class="carts" v-for="(cart, index) in game.playerCards" :src="cart.imageUrl" alt="карта1" :key="index">
+        </transition-group>
+      </div>
+      <div class="ml-50">
+        <span class="score mr-4">{{ playerSumComputed }}</span>
+        <button class="button" :disabled="moreDisabled" @click="addCardToPlayer(game.id)"><span>Hit</span>
+        </button>
+        <button class="button" :disabled="doneDisabled" @click="doneGame"><span>Stand</span></button>
+      </div>
     </div>
   </div>
 </template>
@@ -99,7 +102,7 @@
   }
 
   .carts {
-    max-width: 6%;
+    max-height: 125px;
     border-radius: 7px;
     overflow: hidden;
     margin: -10px 0 0 -40px;
@@ -111,17 +114,17 @@
     align-items: center;
   }
 
-  @media screen and (max-width: 1400px) {
+  @media screen and (max-width: 1300px) {
     .middle-of-field {
-      margin-top: 1%;
+      margin-top: 8%;
       height: 135px;
       margin-bottom: 2%;
     }
   }
 
-  @media screen and(min-width: 1400px) and (max-width: 2000px) {
+  @media screen and(min-width: 1300px) and (max-width: 2000px) {
     .middle-of-field {
-      margin-top: 1%;
+      margin-top: 5%;
       height: 250px;
       margin-bottom: 2%;
     }
@@ -189,5 +192,14 @@
       font-weight: bolder;
     }
   }
-
+.mt--2{
+  margin-top: -3%;
+}
+  .ml-50 {
+   margin-left: 50%;
+  }
+  .player-carts{
+    position: fixed;
+    width: 350px;
+  }
 </style>
