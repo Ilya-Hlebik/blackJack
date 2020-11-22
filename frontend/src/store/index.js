@@ -4,6 +4,7 @@ import main from './modules/main';
 import createPersistedState from "vuex-persistedstate";
 import * as Cookies from "js-cookie";
 import login from './modules/login';
+import bets from './modules/bets';
 
 Vue.use(Vuex);
 
@@ -18,7 +19,8 @@ export const store = new Vuex.Store({
   modules: {
     devtool: 'source-map',
     main,
-    login
+    login,
+    bets
   },
 
   strict: process.env.NODE_ENV !== 'production'

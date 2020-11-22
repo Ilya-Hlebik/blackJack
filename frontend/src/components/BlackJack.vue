@@ -45,12 +45,14 @@
         </div>
       </div>
     </div>
+    <score></score>
   </div>
 </template>
 
 <script>
   import {mapActions, mapGetters} from 'vuex';
   import Bets from '../components/Bets';
+  import Score from '../components/Score';
 
   export default {
     name: 'BlackJack',
@@ -95,7 +97,7 @@
       }
     },
     components: {
-      Bets
+      Bets, Score
     }
   }
 </script>
@@ -122,7 +124,7 @@
 
   @media screen and (max-width: 1300px) {
     .middle-of-field {
-      margin-top: 4%;
+      margin-top: 1%;
       height: 135px;
       margin-bottom: 1%;
     }
@@ -130,7 +132,7 @@
 
   @media screen and(min-width: 1300px) and (max-width: 2000px) {
     .middle-of-field {
-      margin-top: 5%;
+      margin-top: 2%;
       height: 250px;
       margin-bottom: 2%;
     }
@@ -144,12 +146,6 @@
     color: #333;
     opacity: 0.4;
     font: 700 40px 'Bitter';
-  }
-
-  .score {
-    font-size: 32px;
-    font-family: "Open Sans", serif;
-    color: aqua;
   }
 
   @import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");

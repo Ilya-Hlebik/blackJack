@@ -58,12 +58,14 @@ export default {
         if (response.status === 200) {
           store.commit('updateLoginInfo', true);
           store.commit('updateRoles',response.data.roles);
+          store.commit('bets/updateDepositSum', response.data.userInfo.depositSum,{ root: true} )
         } else if (response.status === 405) {
           alert('You are already logged in');
         } else {
           store.commit('updateLoginInfo', false);
         }
       } catch (error) {
+        console.log(error)
         store.commit('updateLoginInfo', false);
       }
     },

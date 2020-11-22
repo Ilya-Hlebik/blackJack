@@ -62,4 +62,9 @@
   .hei-container {
     padding-right: 100px;
   }
+  .score {
+    font-size: 32px;
+    font-family: "Open Sans", serif;
+    color: aqua;
+  }
 </style>

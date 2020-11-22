@@ -21,14 +21,14 @@ public class UserInfo extends AbstractEntity {
     @Field(name = "PHONE")
     private String phone;
 
-    @Field(name = "EMAIL")
-    private String email;
-
     @Field(name = "CITY")
     private String city;
 
     @Field(name = "STREET_ADDRESS")
     private String streetAddress;
+
+    @Field(name = "DEPOSIT")
+    private double depositSum;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

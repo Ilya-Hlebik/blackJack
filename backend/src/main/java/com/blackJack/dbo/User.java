@@ -47,6 +47,6 @@ public class User extends AbstractEntity
     @ToString.Exclude
     @DBRef
     @JsonManagedReference
-    private List<UserInfo> userInfos;
+    private UserInfo userInfo;
 }
 
