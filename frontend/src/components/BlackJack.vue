@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mb-2 mt--2">
+    <div class="mb-2 mt--3">
       <span class="score">{{ dealerSumComputed }}</span>
     </div>
     <div>
@@ -27,8 +27,8 @@
         :to="'/menu'"><span>Start new Game</span>
       </router-link>
     </div>
+    <div class="score">{{ playerSumComputed }}</div>
     <div class="statusContainer">
-      <div></div>
       <div class="player-carts">
         <transition-group name="custom-classes-transition"
                           enter-active-class="animate__animated animate__fadeInTopRight animate__faster"
@@ -36,11 +36,13 @@
           <img class="carts" v-for="(cart, index) in game.playerCards" :src="cart.imageUrl" alt="карта1" :key="index">
         </transition-group>
       </div>
-      <div class="ml-50">
-        <span class="score mr-4">{{ playerSumComputed }}</span>
+      <div class="ml-60">
         <button class="button" :disabled="moreDisabled" @click="addCardToPlayer(game.id)"><span>Hit</span>
         </button>
         <button class="button" :disabled="doneDisabled" @click="doneGame"><span>Stand</span></button>
+        <div>
+          <bets></bets>
+        </div>
       </div>
     </div>
   </div>
@@ -48,6 +50,7 @@
 
 <script>
   import {mapActions, mapGetters} from 'vuex';
+  import Bets from '../components/Bets';
 
   export default {
     name: 'BlackJack',
@@ -90,6 +93,9 @@
           this.doneGame();
         }
       }
+    },
+    components: {
+      Bets
     }
   }
 </script>
@@ -116,9 +122,9 @@
 
   @media screen and (max-width: 1300px) {
     .middle-of-field {
-      margin-top: 8%;
+      margin-top: 4%;
       height: 135px;
-      margin-bottom: 2%;
+      margin-bottom: 1%;
     }
   }
 
@@ -192,14 +198,17 @@
       font-weight: bolder;
     }
   }
-.mt--2{
-  margin-top: -3%;
-}
-  .ml-50 {
-   margin-left: 50%;
+
+  .mt--3 {
+    margin-top: -3%;
   }
-  .player-carts{
+
+  .ml-60 {
+    margin-left: 60%;
+  }
+
+  .player-carts {
     position: fixed;
-    width: 350px;
+    padding-bottom: 50px;
   }
 </style>
