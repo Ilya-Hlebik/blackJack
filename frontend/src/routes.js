@@ -7,14 +7,16 @@ import Menu from './components/Menu';
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: '',
-    redirect: {name: 'menu'}
 
-  },
   {
     name: 'menu',
     path: '/menu',
+    async beforeEnter(from, to, next) {
+      store.commit('main/setStartNewGameClicked',false);
+      store.commit('main/clearPlayerCards');
+      store.commit('main/clearDealerCards');
+      next();
+    },
     component: Menu,
   },
   {
@@ -29,21 +31,12 @@ const routes = [
   {
     path: '/game/:id',
     component: BlackJack,
-    async beforeEnter(from, to, next) {
-      if (from.params.id !== "") {
-        let game = await store.dispatch("main/loadExistingGame", from.params.id);
-        if (game !== null) {
-          if (!game.gameFinished){
-            game = await store.dispatch("main/loadNewGame", from.params.id);
-          }
-          if (game.gameStatus === 'PLAYER_BJ'){
-            await store.dispatch('main/dealerTurns', from.params.id);
-          }
-        }
-      }
-      next();
-    }
-  }
+  },
+  {
+    path: '*',
+    redirect: {name: 'menu'}
+
+  },
 ];
 
 export const router = new VueRouter({

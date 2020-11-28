@@ -2,11 +2,11 @@
   <div class="bets-container">
     <div class="chips">
       <div class="bets">
-        <img class="bet" @click="calculateSum(image.value)" v-for="image in firstImageRow"
+        <img class="bet" @click="addChip(image.value)" v-for="image in firstImageRow"
              :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
       </div>
       <div class="bets">
-        <img class="bet" @click="calculateSum(image.value)" v-for="image in secondImageRow"
+        <img class="bet" @click="addChip(image.value)" v-for="image in secondImageRow"
              :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
       </div>
     </div>
@@ -61,12 +61,17 @@
       ...mapMutations('bets', {
         calculateSum: 'calculateSum',
       }),
+      addChip(value){
+        new Audio(require('@/assets/sounds/chips.wav')).play();
+        this.calculateSum(value);
+      }
     }
   }
 </script>
 
 <style scoped>
   .bet {
+    user-select: none;
     max-width: 70px;
     margin: 2px;
     cursor: copy;

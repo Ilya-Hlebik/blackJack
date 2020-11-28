@@ -6,13 +6,7 @@ export default {
   namespaced: true,
   state: {
     dealerCards: [],
-    /*
-    cart{
-    id;
-    img;
-    val;
-    }
-     */
+    startNewGameClicked:false,
     playerCards: [],
     gameId: '',
     needShowStartGameButton: true,
@@ -33,14 +27,17 @@ export default {
     },
     gameId(state){
       return state.gameId
+    },
+    startNewGameClicked(state){
+      return state.startNewGameClicked;
     }
   },
   mutations: {
     clearDealerCards(state) {
-      state.dealerCards = [];
+      state.game.dealerCards = [];
     },
     clearPlayerCards(state) {
-      state.dealerCards = [];
+      state.game.playerCards = [];
     },
     loadDealerCards(state, data) {
       state.dealerCards = data;
@@ -70,6 +67,9 @@ export default {
     ,
     setGameFinished(state,data){
       state.game.gameFinished = data;
+    },
+    setStartNewGameClicked(state,data){
+      return state.startNewGameClicked = data;
     }
   },
   actions: {
