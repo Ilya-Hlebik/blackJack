@@ -32,7 +32,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.blackJack.security.JwtTokenProvider.ACCESS_TOKEN;
 import static com.blackJack.security.JwtTokenProvider.REFRESH_TOKEN;
 
 
@@ -100,10 +99,6 @@ public class UserService extends AbstractService<User> {
             throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
         }
         return user;
-    }
-
-    public User findMe(final HttpServletRequest req) {
-        return ((UserRepository) repository).findByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req).get(ACCESS_TOKEN), jwtTokenProvider.accessSecretKey));
     }
 
     public void logOut(final HttpServletRequest req) {

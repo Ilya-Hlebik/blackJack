@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/users")
@@ -61,8 +62,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/me")
-    public User findMe(final HttpServletRequest req) {
-        return userService.findMe(req);
+    public User findMe(final Principal principal) {
+        return userService.findMe(principal);
     }
 
     @GetMapping(value = "/logout")
