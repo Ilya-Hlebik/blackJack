@@ -26,4 +26,8 @@ public class UserInfoService extends AbstractService<UserInfo> {
         user.setUserInfo(save);
         return userService.save(user);
     }
+
+    public void save(final UserInfo userInfo) {
+        repository.save(userInfo);
+    }
 }
