@@ -9,7 +9,8 @@ export default {
     needShowRegistrationForm: false,
     needShowForgotPasswordForm: false,
     needShowRecoverPasswordForm: false,
-    roles: []
+    roles: [],
+    user:null
   },
   getters: {
     isLogged(state) {
@@ -29,6 +30,9 @@ export default {
     },
     roles(state){
       return state.roles;
+    },
+    user(state){
+      return state.user;
     }
   },
   mutations: {
@@ -49,7 +53,25 @@ export default {
     },
     updateRoles(state, data){
       state.roles = data;
-    }
+    },
+    setUser(state, data){
+      state.user = data;
+    },
+    setUserName(state, e){
+      state.user.userInfo.name = e.target.value;
+    },
+    setPhone(state, e){
+      state.user.userInfo.phone = e.target.value;
+    },
+    setCity(state, e){
+      state.user.userInfo.city = e.target.value;
+    },
+    setStreetAddress(state, e){
+      state.user.userInfo.streetAddress = e.target.value;
+    },
+    setUserInfo(state, data){
+      state.user.userInfo = data;
+    },
   },
   actions: {
     async signIn(store, data) {
@@ -59,6 +81,7 @@ export default {
           store.commit('updateLoginInfo', true);
           store.commit('updateRoles',response.data.roles);
           store.commit('bets/updateDepositSum', response.data.userInfo.depositSum,{ root: true} )
+          store.commit('setUser', response.data)
         } else if (response.status === 405) {
           alert('You are already logged in');
         } else {
@@ -75,7 +98,7 @@ export default {
         if (response.status === 200) {
           store.commit('updateLoginInfo', false);
           store.commit('updateRoles', []);
-         router.push('/menu');
+          router.push('/menu');
         }
       } catch (error) {
         store.commit('updateLoginInfo', false);
@@ -87,6 +110,7 @@ export default {
       const response = await axios.get('/backend/users/me');
       const responseStatus = response.status === 200;
       store.commit('updateLoginInfo', responseStatus);
+      store.commit('setUser', response.data)
     },
     async signUp(store, data) {
       try {
@@ -132,6 +156,12 @@ export default {
       } catch (error) {
         return false;
       }
+    },
+    async saveUserInfo(store) {
+      await axios.patch('/backend/userInfo/update', store.state.user.userInfo).then(response => {
+        store.commit('setUserInfo', response.data)
+        return response.status === 200;
+      });
     }
   }
 }

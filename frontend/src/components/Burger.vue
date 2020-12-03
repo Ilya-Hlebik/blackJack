@@ -8,11 +8,11 @@
     </a>
     <router-link
       v-show="isLogged"
-      key="orders"
-      to="/orders"
+      key="account"
+      to="/account"
       active-class="active"
       tag="a">
-      <span class="bm-item">My orders</span>
+      <span class="bm-item">My Account</span>
     </router-link>
     <a v-show="isLogged" href="javaScript:" @click="logOut">
       <span class="bm-item">Logout</span>

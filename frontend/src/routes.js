@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import {store} from './store';
 import Menu from './components/Menu';
+import Account from './components/Account';
 
 Vue.use(VueRouter);
 
@@ -27,6 +28,18 @@ const routes = [
         next('/game/' + gameId);
       }
     }
+  },
+  {
+    name: 'accountUpdate',
+    path: '/account/update',
+    component: Account,
+    props: {showEditForm: true}
+  },
+  {
+    name: 'account',
+    path: '/account',
+    component: Account,
+    props: {showEditForm: false}
   },
   {
     path: '/game/:id',

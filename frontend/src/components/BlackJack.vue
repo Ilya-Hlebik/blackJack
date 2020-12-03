@@ -178,6 +178,14 @@
     }
   }
 
+  @media screen and(min-width: 1700px) and (max-width: 2500px) {
+    .middle-of-field {
+      margin-top: 8%;
+      height: 250px;
+      margin-bottom: 2%;
+    }
+  }
+
   .status {
     flex: 0 0 120px;
     margin-bottom: 2%;

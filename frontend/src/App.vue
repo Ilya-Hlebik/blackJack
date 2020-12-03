@@ -3,10 +3,10 @@
     <header>
       <div class="hei-container">
         <div class="row">
-            <div id="outer" class="alert alert-default">
-              <div class="inner">
-                <burger></burger>
-              </div>
+          <div id="outer" class="alert alert-default">
+            <div class="inner">
+              <burger></burger>
+            </div>
           </div>
         </div>
       </div>
@@ -19,15 +19,26 @@
 <script>
   import Burger from './components/Burger';
   import Authorization from './components/auth/Authorization';
+  import {mapActions} from 'vuex';
 
   export default {
+
     name: 'App',
-    components: {Burger,Authorization},
+    created() {
+      this.checkAuthorization();
+    },
+    methods: {
+      ...mapActions('login', {
+        checkAuthorization: 'checkAuthorization'
+      }),
+    },
+    components: {Burger, Authorization},
   }
 </script>
 
 <style lang="scss">
   @import url('https://fonts.googleapis.com/css?family=Alegreya');
+
   #app {
     font-family: Alegreya, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -52,16 +63,20 @@
   body, html {
     height: 100%;
   }
+
   .inner {
     display: inline-block;
   }
+
   #outer {
     width: 100%;
     text-align: left;
   }
+
   .hei-container {
     padding-right: 100px;
   }
+
   .score {
     font-size: 32px;
     font-family: "Open Sans", serif;
