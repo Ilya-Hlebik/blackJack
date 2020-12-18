@@ -34,10 +34,14 @@ export default {
   },
   mutations: {
     clearDealerCards(state) {
-      state.game.dealerCards = [];
+      if (state.game !== null){
+        state.game.dealerCards = [];
+      }
     },
     clearPlayerCards(state) {
-      state.game.playerCards = [];
+      if (state.game !== null){
+        state.game.playerCards = [];
+      }
     },
     loadDealerCards(state, data) {
       state.dealerCards = data;

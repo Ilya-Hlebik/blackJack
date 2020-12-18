@@ -90,7 +90,7 @@
         let game = this.loadExistingGame(this.gameId);
         if (game !== null) {
           if (!game.gameFinished) {
-            if (this.startNewGameClicked){
+            if (this.startNewGameClicked) {
               this.clearDealerCards();
               this.setStartNewGameClicked(false);
             }
@@ -122,13 +122,18 @@
         return this.game.gameStatus === 'PLAYER_BJ' ? 'BJ' : this.game.playerSum !== this.game.playerAltSum ? this.game.playerSum > 21 ? this.game.playerAltSum : (this.game.playerSum + " / " + this.game.playerAltSum) : this.game.playerSum;
       },
       dealerSumComputed() {
-        return this.game.gameStatus === 'DEALER_BJ' ? 'BJ' : this.game.dealerSum !== this.game.dealerAltSum ? this.game.dealerSum > 21 ? this.game.dealerAltSum : (this.game.dealerSum + " / " + this.game.dealerAltSum) : this.game.dealerSum;
+        if (this.game !== null) {
+          return this.game.gameStatus === 'DEALER_BJ' ? 'BJ' : this.game.dealerSum !== this.game.dealerAltSum ? this.game.dealerSum > 21 ? this.game.dealerAltSum : (this.game.dealerSum + " / " + this.game.dealerAltSum) : this.game.dealerSum;
+        }
+        return 0;
       }
     },
     watch: {
       game(newVal, oldVal) {
-        if ((oldVal.playerSum !== this.game.playerSum || oldVal.playerAltSum !== this.game.playerAltSum) && (this.game.playerSum === 21 || this.game.playerAltSum === 21) && !this.game.gameFinished) {
-          this.doneGame();
+        if (this.game !== null) {
+          if ((oldVal.playerSum !== this.game.playerSum || oldVal.playerAltSum !== this.game.playerAltSum) && (this.game.playerSum === 21 || this.game.playerAltSum === 21) && !this.game.gameFinished) {
+            this.doneGame();
+          }
         }
       },
       '$route': {
@@ -144,6 +149,7 @@
 
 <style scoped lang="scss">
   @import '../../node_modules/animate.css/animate.css';
+
   a {
     color: #42b983;
   }
@@ -226,6 +232,7 @@
         inset 8px 8px 16px rgba(0, 0, 0, 0.1);
         color: #79e3b6;
       }
+
       &:disabled {
         opacity: 0.5;
       }
@@ -235,6 +242,7 @@
   .new-game-button {
     width: 200px;
     height: 50px;
+
     span {
       line-height: 40px;
       font-family: "Montserrat", sans-serif;

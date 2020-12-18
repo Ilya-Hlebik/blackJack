@@ -20,6 +20,7 @@
     "js-cookie": "^2.2.1",
     "vue": "^2.6.11",
     "vue-burger-menu": "^2.0.5",
+    "vue-clickaway": "^2.2.2",
     "vue-flash-message": "^0.7.2",
     "vue-gallery-slideshow": "^1.5.0",
     "vue-resource": "^1.5.1",
