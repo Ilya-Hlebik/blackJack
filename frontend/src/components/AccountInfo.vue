@@ -1,15 +1,18 @@
 <template>
-    <div>
-      <div>Username: {{ user.username}}</div>
-      <div>Email: {{ user.email}}</div>
+  <div>
+    <h1>User Info</h1>
+    <div class="userInfo">
+      <div class="block">Username: {{ user.username}}</div>
+      <div class="block">Email: {{ user.email}}</div>
       <div v-if="!needAdd">
-        <div>Name : {{ user.userInfo.name }}</div>
-        <div>Phone : {{ user.userInfo.phone }}</div>
-        <div>City : {{ user.userInfo.city }}</div>
-        <div>StreetAddress : {{ user.userInfo.streetAddress }}</div>
-        <div>DepositSum : {{ user.userInfo.depositSum }}</div>
+        <div class="block">Name : {{ user.userInfo.name }}</div>
+        <div class="block">Phone : {{ user.userInfo.phone }}</div>
+        <div class="block">City : {{ user.userInfo.city }}</div>
+        <div class="block">StreetAddress : {{ user.userInfo.streetAddress }}</div>
+        <div class="block">DepositSum : {{ user.userInfo.depositSum }}</div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -29,5 +32,13 @@
 </script>
 
 <style scoped>
+  .userInfo{
+    padding-left: 5%;
+    text-align: left;
+    font-size: 1.3rem;
 
+  }
+  .block {
+    border-bottom: 1px solid red;
+  }
 </style>

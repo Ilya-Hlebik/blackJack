@@ -26,16 +26,6 @@
       onClickaway: onClickaway,
     },
     props: ['showEditForm'],
-    data() {
-      return {
-        prevRoute: null
-      }
-    },
-    beforeRouteEnter(to, from, next) {
-      next(vm => {
-        vm.prevRoute = from
-      })
-    },
     name: "Account.vue",
     computed: {
       ...mapGetters('login', {
@@ -47,7 +37,7 @@
     },
     methods: {
       away: function() {
-        this.$router.push(this.prevRoute.path)
+        this.$router.push('menu')
       }
     },
 
