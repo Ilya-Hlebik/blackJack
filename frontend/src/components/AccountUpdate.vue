@@ -1,38 +1,34 @@
 <template>
   <div>
-    <section>
-      <div class="container mt-5">
-        <div class="row">
-          <div class="col-sm-12" v-if="showSuccessMessage">
-            <div
-              class="alert fade alert-simple alert-success alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered show">
-              <button type="button" class="close font__size-18" @click="showSuccessMessage=!showSuccessMessage" data-dismiss="alert">
+    <div v-if="showSuccessMessage">
+      <div
+        class="alert fade alert-simple alert-success alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered show">
+        <button type="button" class="close font__size-18" @click="showSuccessMessage=!showSuccessMessage"
+                data-dismiss="alert">
 									<span aria-hidden="true"><a href="https://www.youtube.com/watch?v=_XiOcsj3oNI&t=50s" target="_blank">
                     <i class="fa fa-times greencross"></i>
                     </a></span>
-                <span class="sr-only">Close</span>
-              </button>
-              <i class="start-icon far fa-check-circle faa-tada animated"></i>
-              <strong class="font__weight-semibold">Well done!</strong> You successfullyread this important.
-            </div>
-          </div>
-          <div class="col-sm-12" v-if="showFailMessage">
-            <div
-              class="alert fade alert-simple alert-danger alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered show"
-              role="alert" data-brk-library="component__alert">
-              <button type="button" class="close font__size-18"  @click="showFailMessage=!showFailMessage"data-dismiss="alert">
+          <span class="sr-only">Close</span>
+        </button>
+        <i class="start-icon far fa-check-circle faa-tada animated"></i>
+        <strong class="font__weight-semibold">Done!</strong> Info was successfully saved.
+      </div>
+    </div>
+    <div class="col-sm-12" v-if="showFailMessage">
+      <div
+        class="alert fade alert-simple alert-danger alert-dismissible text-left font__family-montserrat font__size-16 font__weight-light brk-library-rendered rendered show"
+        role="alert" data-brk-library="component__alert">
+        <button type="button" class="close font__size-18" @click="showFailMessage=!showFailMessage"
+                data-dismiss="alert">
 									<span aria-hidden="true">
 										<i class="fa fa-times danger "></i>
 									</span>
-                <span class="sr-only">Close</span>
-              </button>
-              <i class="start-icon far fa-times-circle faa-pulse animated"></i>
-              <strong class="font__weight-semibold">Oh snap!</strong> Change a few things up and try submitting again.
-            </div>
-          </div>
-        </div>
+          <span class="sr-only">Close</span>
+        </button>
+        <i class="start-icon far fa-times-circle faa-pulse animated"></i>
+        <strong class="font__weight-semibold">Oh snap!</strong> Something went wrong.
       </div>
-    </section>
+    </div>
     <h1>Edit user Info</h1>
     <div class="form__group field">
       <input id='name' type="text" class="form__field" placeholder="Name" :value="user.userInfo.name"
@@ -55,7 +51,7 @@
              @input="setStreetAddress" key="streetAddress">
       <label for="streetAddress" class="form__label">Phone</label>
     </div>
-    <button class="btn effect01" @click="saveUserInfoAndGetResult">Save</button>
+    <button class="btn-main   effect01" @click="saveUserInfoAndGetResult">Save</button>
   </div>
 </template>
 
@@ -163,77 +159,6 @@
     &:required, &:invalid {
       box-shadow: none;
     }
-  }
-
-  .btn {
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 25px;
-    max-width: 80px;
-    position: relative;
-    text-decoration: none;
-    text-transform: uppercase;
-    width: 80%;
-    margin: 20px;
-  }
-
-  .btn:hover {
-    text-decoration: none;
-  }
-
-  /*btn_background*/
-  .effect01 {
-    color: #FFF;
-    border: 4px solid #000;
-    box-shadow: 0px 0px 0px 1px #000 inset;
-    overflow: hidden;
-    position: relative;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .effect01:hover {
-    border: 4px solid #666;
-    background-color: #159957;
-    box-shadow: 0px 0px 0px 4px #EEE inset;
-  }
-
-  /*btn_text*/
-  .effect01 span {
-    transition: all 0.2s ease-out;
-    z-index: 2;
-  }
-
-  .effect01:hover span {
-    letter-spacing: 0.13em;
-    color: #333;
-  }
-
-  /*highlight*/
-  .effect01:after {
-    background: #FFF;
-    border: 0px solid #000;
-    content: "";
-    height: 155px;
-    left: -75px;
-    opacity: .8;
-    position: absolute;
-    top: -50px;
-    -webkit-transform: rotate(35deg);
-    transform: rotate(35deg);
-    width: 50px;
-    transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1); /*easeOutCirc*/
-    z-index: 1;
-  }
-
-  .effect01:hover:after {
-    background: #FFF;
-    border: 20px solid #000;
-    opacity: 0;
-    left: 120%;
-    -webkit-transform: rotate(40deg);
-    transform: rotate(40deg);
   }
 
   .alert > .start-icon {

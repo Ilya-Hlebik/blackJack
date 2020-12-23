@@ -54,9 +54,9 @@
     background-image: linear-gradient(120deg, #155799, #159957);
     width: 50%;
     min-height: content-box;
-    margin: auto;
     border: 3px solid green;
     padding: 10px;
+    margin: 100px auto auto;
     top: 30%;
     left: 50%;
     position: absolute;

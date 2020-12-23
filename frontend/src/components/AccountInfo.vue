@@ -12,6 +12,7 @@
         <div class="block">DepositSum : {{ user.userInfo.depositSum }}</div>
       </div>
     </div>
+    <button class="btn-main effect01 deposit-btn">Deposit</button>
   </div>
 </template>
 
@@ -32,13 +33,18 @@
 </script>
 
 <style scoped>
-  .userInfo{
+  .userInfo {
     padding-left: 5%;
     text-align: left;
     font-size: 1.3rem;
 
   }
+
   .block {
-    border-bottom: 1px solid red;
+    border-bottom: 2px solid #159957;;
+  }
+
+  .deposit-btn {
+    max-width: 95px;
   }
 </style>
