@@ -32,4 +32,11 @@ public class UserInfoController {
     public UserInfo updateUserInfo(final Principal principal,@RequestBody final UserInfoDto userInfo){
         return userInfoService.updateUserInfo(principal,userInfo);
     }
+
+
+    @PostMapping("/deposit")
+    public double deposit(final Principal principal, @RequestBody final double depositSum)
+    {
+        return userInfoService.depositSum(principal, depositSum);
+    }
 }

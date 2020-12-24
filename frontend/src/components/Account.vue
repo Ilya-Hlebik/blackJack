@@ -10,6 +10,7 @@
         <font-awesome-icon icon="cog"/>
       </router-link>
       <account-update v-if="showEditForm"></account-update>
+      <account-deposit v-else-if="showDepositForm"></account-deposit>
       <account-info v-else></account-info>
     </div>
   </div>
@@ -18,6 +19,7 @@
 <script>
   import {mapGetters} from "vuex";
   import AccountUpdate from './AccountUpdate';
+  import AccountDeposit from './AccountDeposit';
   import AccountInfo from './AccountInfo';
   import {directive as onClickaway} from 'vue-clickaway';
 
@@ -25,7 +27,7 @@
     directives: {
       onClickaway: onClickaway,
     },
-    props: ['showEditForm'],
+    props: ['showEditForm', 'showDepositForm'],
     name: "Account.vue",
     computed: {
       ...mapGetters('login', {
@@ -42,7 +44,7 @@
     },
 
     components: {
-      AccountUpdate, AccountInfo
+      AccountUpdate, AccountInfo, AccountDeposit
     }
   }
 </script>

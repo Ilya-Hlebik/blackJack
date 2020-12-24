@@ -12,7 +12,12 @@
         <div class="block">DepositSum : {{ user.userInfo.depositSum }}</div>
       </div>
     </div>
-    <button class="btn-main effect01 deposit-btn">Deposit</button>
+    <router-link class="btn-main effect01 deposit-btn"
+                 key="accounupdate"
+                 to="/account/deposit"
+                 active-class="active"
+                 tag="span"> Deposit
+    </router-link>
   </div>
 </template>
 
@@ -32,7 +37,7 @@
   }
 </script>
 
-<style scoped>
+<style>
   .userInfo {
     padding-left: 5%;
     text-align: left;

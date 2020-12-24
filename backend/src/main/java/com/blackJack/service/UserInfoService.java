@@ -52,4 +52,14 @@ public class UserInfoService extends AbstractService<UserInfo> {
         save(userInfo);
         return userInfo;
     }
+
+    @Transactional
+    public double depositSum(final Principal principal, final Double depositSum)
+    {
+        final UserInfo userInfo = userService.findMe(principal).getUserInfo();
+        final double finalMoneyAmount = userInfo.getDepositSum() + depositSum;
+        userInfo.setDepositSum(finalMoneyAmount);
+        save(userInfo);
+        return finalMoneyAmount;
+    }
 }

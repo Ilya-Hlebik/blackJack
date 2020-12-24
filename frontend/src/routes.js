@@ -36,6 +36,12 @@ const routes = [
     props: {showEditForm: true}
   },
   {
+    name: 'accountDeposit',
+    path: '/account/deposit',
+    component: Account,
+    props: {showDepositForm: true}
+  },
+  {
     name: 'account',
     path: '/account',
     component: Account,

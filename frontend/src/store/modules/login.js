@@ -72,6 +72,9 @@ export default {
     setUserInfo(state, data){
       state.user.userInfo = data;
     },
+    setDepositSum(state,data){
+      state.user.userInfo.depositSum = data;
+    }
   },
   actions: {
     async signIn(store, data) {
@@ -158,10 +161,17 @@ export default {
       }
     },
     async saveUserInfo(store) {
-      await axios.patch('/backend/userInfo/update', store.state.user.userInfo).then(response => {
+      return await axios.patch('/backend/userInfo/update', store.state.user.userInfo).then(response => {
         store.commit('setUserInfo', response.data)
         return response.status === 200;
-      });
+      }).catch(() => false);
+    },
+    async saveUserDeposit(store, depositSum) {
+      console.log(depositSum);
+      return await axios.post('/backend/userInfo/deposit',  depositSum, {headers: {"Content-Type": "application/json"}}).then(response => {
+        store.commit('setDepositSum', response.data)
+        return response.status === 200;
+      }).catch(() => false);
     }
   }
 }
