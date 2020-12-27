@@ -101,9 +101,12 @@ export default {
           });
     },
     async loadNewGame(store, data) {
-      const response = await axios.get('/backend/game/get/' + data);
-      store.commit('setStateGame', response.data);
-      return response.data;
+      const betResponse = await axios.post('/backend/bet/place/', data);
+      if (betResponse.status === 200) {
+        const response = await axios.get('/backend/game/get/' + data.gameId);
+        store.commit('setStateGame', response.data);
+        return response.data;
+      }
     },
     async dealerTurns(store, data) {
       const response = await axios.post('/backend/game/dealerTurns/' + data);
@@ -131,6 +134,7 @@ export default {
         }
         store.commit('setGameStatus', gameStatus);
         store.commit('setGameFinished', true);
+        store.dispatch("login/checkAuthorization", null, {root: true})
       }
       randForTen();
     },

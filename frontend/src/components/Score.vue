@@ -12,6 +12,8 @@
     computed: {
       ...mapGetters('bets', {
         betSum: 'betSum',
+      }),
+      ...mapGetters('login', {
         depositSum: 'depositSum'
       }),
     }

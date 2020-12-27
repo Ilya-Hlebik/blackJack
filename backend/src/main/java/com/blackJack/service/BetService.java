@@ -1,21 +1,28 @@
 package com.blackJack.service;
 
 import com.blackJack.dbo.Bet;
+import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.User;
+import com.blackJack.dbo.UserInfo;
+import com.blackJack.dto.PlaceDto;
 import com.blackJack.enumeration.BetStatus;
+import com.blackJack.enumeration.GameStatus;
 import com.blackJack.repository.BetRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BetService {
     private final BetRepository betRepository;
     private final UserService userService;
+    @Lazy
     private final GameService gameService;
     private final UserInfoService userInfoService;
 
@@ -23,21 +30,48 @@ public class BetService {
         return betRepository.findById(betID).orElseThrow();
     }
 
-    public ResponseEntity<Void> placeBet(final Principal principal, final double amount, final String gameId) {
 
+    public ResponseEntity<Void> placeBet(final Principal principal, final PlaceDto placeDto) {
         final User me = userService.findMe(principal);
-        if (me.getUserInfo() != null) {
+        final GameEntity gameById = gameService.getGameById(placeDto.getGameId());
+        if (me.getUserInfo() != null && !gameById.isGameLoaded()) {
             final double depositSum = me.getUserInfo().getDepositSum();
-            if (depositSum <= amount) {
+            if (depositSum >= placeDto.getBetSum()) {
                 final Bet bet = new Bet();
                 bet.setBetStatus(BetStatus.PLACED);
-                bet.setGameEntity(gameService.getGameById(gameId));
-                bet.setAmount(amount);
+                bet.setGameEntity(gameById);
+                bet.setAmount(placeDto.getBetSum());
                 betRepository.save(bet);
-                me.getUserInfo().setDepositSum(depositSum - amount);
+                me.getUserInfo().setDepositSum(depositSum - placeDto.getBetSum());
                 userInfoService.save(me.getUserInfo());
+                return ResponseEntity.status(HttpStatus.OK).build();
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    public void calculateBets(final Principal principal, final GameEntity gameEntity) {
+        final List<Bet> byGameEntity = betRepository.findByGameEntityAndProcessedFalse(gameEntity);
+        final User user = userService.findMe(principal);
+        byGameEntity.forEach(bet -> {
+            final GameStatus gameStatus = gameEntity.getGameStatus();
+            if (GameStatus.DRAW == gameStatus) {
+                payoutBet(user, bet, 1);
+            } else if (GameStatus.PLAYER_WON == gameStatus) {
+                payoutBet(user, bet, 2);
+            } else if (GameStatus.PLAYER_BJ == gameStatus) {
+                payoutBet(user, bet, 3);
+            } else if (GameStatus.DEALER_WON != gameStatus) {
+                throw new RuntimeException();
+            }
+        });
+    }
+
+    private void payoutBet(final User me, final Bet bet, final int betMultiplier) {
+        final UserInfo userInfo = me.getUserInfo();
+        userInfo.setDepositSum(userInfo.getDepositSum() + bet.getAmount() * betMultiplier);
+        userInfoService.save(userInfo);
+        bet.setProcessed(true);
+        betRepository.save(bet);
     }
 }

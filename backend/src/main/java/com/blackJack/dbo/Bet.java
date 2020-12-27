@@ -18,4 +18,5 @@ public class Bet extends AbstractEntity {
     private BetStatus betStatus;
     @DBRef
     private GameEntity gameEntity;
+    private boolean processed;
 }

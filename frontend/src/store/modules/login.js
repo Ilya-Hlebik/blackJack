@@ -33,6 +33,9 @@ export default {
     },
     user(state){
       return state.user;
+    },
+    depositSum(state){
+      return state.user.userInfo.depositSum;
     }
   },
   mutations: {
@@ -74,6 +77,9 @@ export default {
     },
     setDepositSum(state,data){
       state.user.userInfo.depositSum = data;
+    },
+    updateDepositAmount(state,data){
+      return state.user.userInfo.depositSum = state.user.userInfo.depositSum - data;
     }
   },
   actions: {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mb-2 mt--3">
+    <div class="mb-2 mt--3" v-if="!finishBetsShowed">
       <span class="score">{{ dealerSumComputed }}</span>
     </div>
     <div>
@@ -31,9 +31,11 @@
         </router-link>
       </div>
     </div>
-    <div class="score">{{ playerSumComputed }}</div>
     <div class="statusContainer">
       <div class="player-carts">
+        <div class="mb-2" v-if="!finishBetsShowed">
+          <div class="score">{{ playerSumComputed }}</div>
+        </div>
         <transition-group name="custom-classes-transition"
                           enter-active-class="animate__animated animate__fadeInTopRight animate__faster"
                           leave-active-class="animated zoomOut" mode="out-in">
@@ -41,11 +43,12 @@
         </transition-group>
       </div>
       <div class="ml-60">
+        <button class="button new-game-button" :disabled="betSum === 0" v-show="finishBetsShowed" @click="finishBets"><span>Finish Bets</span></button>
         <button class="button" :disabled="moreDisabled" @click="hit(game.id)"><span>Hit</span>
         </button>
         <button class="button" :disabled="doneDisabled" @click="doneGame"><span>Stand</span></button>
         <div>
-          <bets></bets>
+          <bets v-if="finishBetsShowed"></bets>
         </div>
       </div>
     </div>
@@ -76,6 +79,13 @@
         new Audio(require('@/assets/sounds/hit.wav')).play();
         this.addCardToPlayer(gameId);
       },
+      finishBets() {
+        new Audio(require('@/assets/sounds/click_main.wav')).play();
+        let game = this.loadNewGame({gameId:this.gameId, betSum: this.betSum});
+        if (game.gameStatus === 'PLAYER_BJ') {
+          this.dealerTurns(this.gameId);
+        }
+      },
       ...mapActions('main', {
         dealerTurns: 'dealerTurns',
         addCardToPlayer: 'addCardToPlayer',
@@ -86,7 +96,11 @@
         clearDealerCards: 'clearDealerCards',
         setStartNewGameClicked: 'setStartNewGameClicked'
       }),
+      ...mapMutations('bets', {
+        clearBets: 'clearBets',
+      }),
       loadBoard() {
+        this.clearBets();
         let game = this.loadExistingGame(this.gameId);
         if (game !== null) {
           if (!game.gameFinished) {
@@ -94,15 +108,10 @@
               this.clearDealerCards();
               this.setStartNewGameClicked(false);
             }
-            game = this.loadNewGame(this.gameId);
-            if (game.gameStatus === 'PLAYER_BJ') {
-              this.dealerTurns(this.gameId);
-            }
           }
         }
       },
       startNewGameClick() {
-        new Audio(require('@/assets/sounds/click_main.wav')).play();
         this.setStartNewGameClicked(true);
       }
     },
@@ -112,11 +121,17 @@
         game: 'game',
         startNewGameClicked: 'startNewGameClicked'
       }),
+      ...mapGetters('bets', {
+        betSum: 'betSum',
+      }),
+      finishBetsShowed(){
+        return !this.game.gameLoaded;
+      },
       moreDisabled() {
-        return this.game.gameStatus === 'PLAYER_BJ' || this.doneClicked || this.game.gameFinished || this.game.playerSum === 21 || this.game.playerAltSum === 21
+        return this.finishBetsShowed || this.game.gameStatus === 'PLAYER_BJ' || this.doneClicked || this.game.gameFinished || this.game.playerSum === 21 || this.game.playerAltSum === 21
       },
       doneDisabled() {
-        return this.game.gameStatus === 'PLAYER_BJ' || this.doneClicked || this.game.gameFinished || this.game.playerSum === 21 || this.game.playerAltSum === 21;
+        return this.finishBetsShowed || this.game.gameStatus === 'PLAYER_BJ' || this.doneClicked || this.game.gameFinished || this.game.playerSum === 21 || this.game.playerAltSum === 21;
       },
       playerSumComputed() {
         return this.game.gameStatus === 'PLAYER_BJ' ? 'BJ' : this.game.playerSum !== this.game.playerAltSum ? this.game.playerSum > 21 ? this.game.playerAltSum : (this.game.playerSum + " / " + this.game.playerAltSum) : this.game.playerSum;
@@ -172,7 +187,7 @@
     .middle-of-field {
       margin-top: 1%;
       height: 135px;
-      margin-bottom: 1%;
+      margin-bottom: 15%;
     }
   }
 

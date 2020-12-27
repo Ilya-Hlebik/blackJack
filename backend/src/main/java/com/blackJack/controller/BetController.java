@@ -1,6 +1,7 @@
 package com.blackJack.controller;
 
 import com.blackJack.dbo.Bet;
+import com.blackJack.dto.PlaceDto;
 import com.blackJack.service.BetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class BetController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Void> placeBet(@RequestBody final Principal principal, final  double amount, String gameId){
-        return betService.placeBet(principal, amount, gameId);
+    public ResponseEntity<Void> placeBet(final Principal principal, @RequestBody final PlaceDto placeDto) {
+        return betService.placeBet(principal, placeDto);
     }
 }

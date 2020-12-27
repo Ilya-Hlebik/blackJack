@@ -1,13 +1,6 @@
 package com.blackJack.service;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.enumeration.GameStatus;
@@ -20,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.*;
 
 
 @SpringBootTest
@@ -72,7 +67,7 @@ public class GameServiceTest
         Mockito.doReturn(dealerCart4).when(cardService).findByName("2C");
 
         Mockito.doReturn(Optional.of(gameEntity)).when(gameRepository).findById(GAME_ID);
-        final GameEntity gameResult = gameService.dealerTurns(GAME_ID);
+        final GameEntity gameResult = gameService.dealerTurns(null, GAME_ID);
         Assert.assertEquals(GameStatus.DEALER_WON,gameEntity.getGameStatus());
         Assert.assertEquals(2,gameResult.getDealerCards().size());
         Assert.assertEquals(21,gameResult.getDealerSum());
@@ -112,7 +107,7 @@ public class GameServiceTest
         Mockito.doReturn(dealerCart4).when(cardService).findByName("2C");
 
         Mockito.doReturn(Optional.of(gameEntity)).when(gameRepository).findById(GAME_ID);
-        final GameEntity gameResult = gameService.dealerTurns(GAME_ID);
+        final GameEntity gameResult = gameService.dealerTurns(null, GAME_ID);
         Assert.assertEquals(GameStatus.DEALER_WON,gameEntity.getGameStatus());
         Assert.assertEquals(4,gameResult.getDealerCards().size());
         Assert.assertEquals(18,gameResult.getDealerSum());
@@ -153,7 +148,7 @@ public class GameServiceTest
         Mockito.doReturn(dealerCart4).when(cardService).findByName("8C");
 
         Mockito.doReturn(Optional.of(gameEntity)).when(gameRepository).findById(GAME_ID);
-        final GameEntity gameResult = gameService.dealerTurns(GAME_ID);
+        final GameEntity gameResult = gameService.dealerTurns(null, GAME_ID);
         Assert.assertEquals(3,gameResult.getDealerCards().size());
         Assert.assertEquals(18,gameResult.getDealerSum());
         Assert.assertEquals(18,gameResult.getDealerAltSum());
@@ -216,7 +211,7 @@ public class GameServiceTest
 
         Mockito.doReturn(Optional.of(gameEntity)).when(gameRepository).findById(GAME_ID);
 
-        final GameEntity gameResult = gameService.dealerTurns(GAME_ID);
+        final GameEntity gameResult = gameService.dealerTurns(null, GAME_ID);
 
         Assert.assertEquals(5,gameResult.getDealerCards().size());
         Assert.assertEquals(21,gameResult.getDealerSum());
@@ -285,7 +280,7 @@ public class GameServiceTest
 
         Mockito.doReturn(Optional.of(gameEntity)).when(gameRepository).findById(GAME_ID);
 
-        final GameEntity gameResult = gameService.dealerTurns(GAME_ID);
+        final GameEntity gameResult = gameService.dealerTurns(null, GAME_ID);
 
         Assert.assertEquals(7,gameResult.getDealerCards().size());
         Assert.assertEquals(31,gameResult.getDealerSum());

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import {mapMutations} from "vuex";
+  import {mapActions} from "vuex";
 
   export default {
     name: "Bets",
@@ -58,7 +58,7 @@
       }
     },
     methods: {
-      ...mapMutations('bets', {
+      ...mapActions('bets', {
         calculateSum: 'calculateSum',
       }),
       addChip(value){

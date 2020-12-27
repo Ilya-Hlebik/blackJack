@@ -32,12 +32,12 @@ public class GameController
     }
 
     @PostMapping("/dealerTurns/{gameId}")
-    public GameEntity dealerTurns(@PathVariable final String gameId){
-        return  gameService.dealerTurns(gameId);
+    public GameEntity dealerTurns(final Principal principal, @PathVariable final String gameId){
+        return  gameService.dealerTurns(principal,gameId);
     }
 
     @PostMapping("/addCardToPlayer/{gameId}")
-    public GameEntity addCardToPlayer(@PathVariable final String gameId){
-        return  gameService.addCardToPlayer(gameId);
+    public GameEntity addCardToPlayer(final Principal principal, @PathVariable final String gameId){
+        return  gameService.addCardToPlayer(principal, gameId);
     }
 }

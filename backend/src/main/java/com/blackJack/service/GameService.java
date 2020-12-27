@@ -1,15 +1,6 @@
 package com.blackJack.service;
 
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.GameStep;
@@ -17,8 +8,13 @@ import com.blackJack.dbo.User;
 import com.blackJack.enumeration.GameStatus;
 import com.blackJack.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.security.Principal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,7 +28,8 @@ public class GameService
     private final StepService stepService;
 
     private final UserService userService;
-
+    @Lazy
+    private final BetService betService;
 
     public String createGame(final Principal req)
     {
@@ -150,7 +147,7 @@ public class GameService
     }
 
 
-    public GameEntity dealerTurns(final String gameId)
+    public GameEntity dealerTurns(final Principal principal, final String gameId)
     {
         final GameEntity gameEntity = getGameById(gameId);
         final List<GameStep> stepsToSave = new ArrayList<>();
@@ -162,6 +159,7 @@ public class GameService
             {
                 gameEntity.setGameStatus(GameStatus.DEALER_WON);
                 gameEntity.setGameFinished(true);
+                betService.calculateBets(principal, gameEntity);
                 return gameEntity;
             }
             Integer dealerSum = gameEntity.getDealerSum();
@@ -200,7 +198,6 @@ public class GameService
                 stepsToSave.add(step);
             }
             dealerSum = recalculateDealerSum(dealerSum, gameEntity);
-            gameEntity.setGameFinished(true);
             final int dealerMainSum = dealerSum > 21 ? dealerAltSum : dealerSum;
             final boolean dealerBJ = dealerMainSum == 21 && gameEntity.getDealerCards()
                     .size() == 2;
@@ -223,6 +220,7 @@ public class GameService
             gameEntity.setDealerSum(dealerSum);
             stepService.saveAll(stepsToSave);
             save(gameEntity);
+            betService.calculateBets(principal, gameEntity);
         }
         return gameEntity;
     }
@@ -262,7 +260,7 @@ public class GameService
     }
 
 
-    public GameEntity addCardToPlayer(final String gameId)
+    public GameEntity addCardToPlayer(final Principal principal, final String gameId)
     {
         final GameEntity gameEntity = getGameById(gameId);
         if (!gameEntity.isGameFinished() && getSumFromCard(gameEntity.getPlayerCards()) != 21
@@ -284,6 +282,7 @@ public class GameService
             {
                 gameEntity.setGameStatus(GameStatus.DEALER_WON);
                 gameEntity.setGameFinished(true);
+                betService.calculateBets(principal, gameEntity);
             }
             final GameStep lastStep = getLastGameStep(gameEntity);
             final GameStep step = new GameStep(gameEntity.getId(), lastStep.getStepNumber() + 1,
