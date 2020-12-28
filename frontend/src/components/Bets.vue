@@ -1,23 +1,33 @@
 <template>
-  <div class="bets-container">
-    <div class="chips">
-      <div class="bets">
-        <img class="bet" @click="addChip(image.value)" v-for="image in firstImageRow"
-             :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
-      </div>
-      <div class="bets">
-        <img class="bet" @click="addChip(image.value)" v-for="image in secondImageRow"
-             :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
+  <div>
+    <error-notification
+      v-if="showErrorNotification"
+      @closeNotification="showErrorNotification = false"
+      warningTitle="Error."
+      warningDescription="You can't place more than deposit"></error-notification>
+    <div class="bets-container">
+      <div class="chips">
+
+        <div class="bets">
+          <img class="bet" @click="addChip(image.value)" v-for="image in firstImageRow"
+               :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
+        </div>
+        <div class="bets">
+          <img class="bet" @click="addChip(image.value)" v-for="image in secondImageRow"
+               :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import {mapActions} from "vuex";
+  import {mapActions, mapGetters} from "vuex";
+  import ErrorNotification from './ErrorNotification';
 
   export default {
     name: "Bets",
+    components: {ErrorNotification},
     data() {
       return {
         firstImageRow: [{
@@ -54,17 +64,27 @@
           title: "100$",
           value: 100
         }],
-        betSum: 0
+        betSum: 0,
+        showErrorNotification: false
       }
+    },
+    computed: {
+      ...mapGetters('login', {
+        depositSum: 'depositSum'
+      }),
     },
     methods: {
       ...mapActions('bets', {
         calculateSum: 'calculateSum',
       }),
-      addChip(value){
+      addChip(value) {
         new Audio(require('@/assets/sounds/chips.wav')).play();
-        this.calculateSum(value);
-      }
+        if (this.depositSum - value < 0) {
+          this.showErrorNotification = true;
+        } else {
+          this.calculateSum(value);
+        }
+      },
     }
   }
 </script>
@@ -77,16 +97,16 @@
     cursor: copy;
   }
 
-  .bets, .bets-container{
+  .bets, .bets-container {
     display: flex;
   }
 
-  .bet-sum{
-    position:relative;
-    right:100px;
-    top:2px;
+  .bet-sum {
+    position: relative;
+    right: 100px;
+    top: 2px;
   }
 
-  .chips{
+  .chips {
   }
 </style>

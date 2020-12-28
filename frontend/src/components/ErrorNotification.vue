@@ -6,13 +6,23 @@
             data-dismiss="alert">
     </button>
     <i class="start-icon far fa-times-circle faa-pulse animated"></i>
-    <strong class="font__weight-semibold">Oh snap!</strong> Something went wrong.
+    <strong class="font__weight-semibold">{{ warningTitle }}</strong> {{ warningDescription }}
   </div>
 </template>
 
 <script>
   export default {
     name: "ErrorNotification.vue",
+    props: {
+      warningTitle: {
+        type: String,
+        default: 'Oh snap!'
+      },
+      warningDescription: {
+        type: String,
+        default: 'Something went wrong.'
+      },
+    },
     methods: {
       closeNotification() {
         this.$emit("closeNotification")

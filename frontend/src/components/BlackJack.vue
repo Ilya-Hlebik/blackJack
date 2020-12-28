@@ -44,9 +44,9 @@
       </div>
       <div class="ml-60">
         <button class="button new-game-button" :disabled="betSum === 0" v-show="finishBetsShowed" @click="finishBets"><span>Finish Bets</span></button>
-        <button class="button" :disabled="moreDisabled" @click="hit(game.id)"><span>Hit</span>
+        <button class="button" :disabled="moreDisabled" @click="hit(game.id)" v-show="!finishBetsShowed"><span>Hit</span>
         </button>
-        <button class="button" :disabled="doneDisabled" @click="doneGame"><span>Stand</span></button>
+        <button class="button" :disabled="doneDisabled" @click="doneGame" v-show="!finishBetsShowed"><span>Stand</span></button>
         <div>
           <bets v-if="finishBetsShowed"></bets>
         </div>
@@ -203,7 +203,7 @@
     .middle-of-field {
       margin-top: 8%;
       height: 250px;
-      margin-bottom: 2%;
+      margin-bottom: 10%;
     }
   }
 

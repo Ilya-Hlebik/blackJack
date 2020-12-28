@@ -5,13 +5,23 @@
             data-dismiss="alert">
     </button>
     <i class="start-icon far fa-check-circle faa-tada animated"></i>
-    <strong class="font__weight-semibold">Done!</strong> Info was successfully saved.
+    <strong class="font__weight-semibold">{{ warningTitle }}</strong> {{ warningDescription }}
   </div>
 </template>
 
 <script>
   export default {
     name: "SuccessNotification",
+    props: {
+      warningTitle: {
+        type: String,
+        default: 'Done!'
+      },
+      warningDescription: {
+        type: String,
+        default: 'Info was successfully saved.'
+      },
+    },
     methods: {
       closeNotification() {
         this.$emit("closeNotification")
