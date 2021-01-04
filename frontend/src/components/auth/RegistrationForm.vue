@@ -41,7 +41,6 @@
         methods: {
             async registration() {
                 let success = await this.signUp({username: this.username, password: this.password, email: this.email});
-                console.log(success);
                 this.needShowRegistrationForm(!success);
                 this.showError = !success;
             },

@@ -10,7 +10,7 @@ export default {
     playerCards: [],
     gameId: '',
     needShowStartGameButton: true,
-    game: null
+    game: {}
   },
   getters: {
     dealerCards(state) {
@@ -34,14 +34,10 @@ export default {
   },
   mutations: {
     clearDealerCards(state) {
-      if (state.game !== null){
-        state.game.dealerCards = [];
-      }
+      state.game.dealerCards = [];
     },
     clearPlayerCards(state) {
-      if (state.game !== null){
-        state.game.playerCards = [];
-      }
+      state.game.playerCards = [];
     },
     loadDealerCards(state, data) {
       state.dealerCards = data;

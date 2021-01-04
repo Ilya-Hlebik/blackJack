@@ -137,18 +137,13 @@
         return this.game.gameStatus === 'PLAYER_BJ' ? 'BJ' : this.game.playerSum !== this.game.playerAltSum ? this.game.playerSum > 21 ? this.game.playerAltSum : (this.game.playerSum + " / " + this.game.playerAltSum) : this.game.playerSum;
       },
       dealerSumComputed() {
-        if (this.game !== null) {
-          return this.game.gameStatus === 'DEALER_BJ' ? 'BJ' : this.game.dealerSum !== this.game.dealerAltSum ? this.game.dealerSum > 21 ? this.game.dealerAltSum : (this.game.dealerSum + " / " + this.game.dealerAltSum) : this.game.dealerSum;
-        }
-        return 0;
+        return this.game.gameStatus === 'DEALER_BJ' ? 'BJ' : this.game.dealerSum !== this.game.dealerAltSum ? this.game.dealerSum > 21 ? this.game.dealerAltSum : (this.game.dealerSum + " / " + this.game.dealerAltSum) : this.game.dealerSum;
       }
     },
     watch: {
       game(newVal, oldVal) {
-        if (this.game !== null) {
-          if ((oldVal.playerSum !== this.game.playerSum || oldVal.playerAltSum !== this.game.playerAltSum) && (this.game.playerSum === 21 || this.game.playerAltSum === 21) && !this.game.gameFinished) {
-            this.doneGame();
-          }
+        if ((oldVal.playerSum !== this.game.playerSum || oldVal.playerAltSum !== this.game.playerAltSum) && (this.game.playerSum === 21 || this.game.playerAltSum === 21) && !this.game.gameFinished) {
+          this.doneGame();
         }
       },
       '$route': {

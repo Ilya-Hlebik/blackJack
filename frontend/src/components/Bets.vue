@@ -6,14 +6,13 @@
       warningTitle="Error."
       warningDescription="You can't place more than deposit"></error-notification>
     <div class="bets-container">
-      <div class="chips">
-
+      <div>
         <div class="bets">
-          <img class="bet" @click="addChip(image.value)" v-for="image in firstImageRow"
+          <img class="chips" @click="addChip(image.value)" v-for="image in firstImageRow"
                :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
         </div>
         <div class="bets">
-          <img class="bet" @click="addChip(image.value)" v-for="image in secondImageRow"
+          <img class="chips" @click="addChip(image.value)" v-for="image in secondImageRow"
                :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
         </div>
       </div>
@@ -89,14 +88,7 @@
   }
 </script>
 
-<style scoped>
-  .bet {
-    user-select: none;
-    max-width: 70px;
-    margin: 2px;
-    cursor: copy;
-  }
-
+<style lang="scss" scoped>
   .bets, .bets-container {
     display: flex;
   }
@@ -108,5 +100,18 @@
   }
 
   .chips {
+    user-select: none;
+    max-width: 70px;
+    margin: 2px;
+    font-size: 24px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-radius: 15px;
+  }
+
+  .chips:active {
+    transform: translateY(4px);
   }
 </style>

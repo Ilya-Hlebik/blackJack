@@ -97,7 +97,6 @@ export default {
           store.commit('updateLoginInfo', false);
         }
       } catch (error) {
-        console.log(error)
         store.commit('updateLoginInfo', false);
       }
     },
@@ -173,7 +172,6 @@ export default {
       }).catch(() => false);
     },
     async saveUserDeposit(store, depositSum) {
-      console.log(depositSum);
       return await axios.post('/backend/userInfo/deposit',  depositSum, {headers: {"Content-Type": "application/json"}}).then(response => {
         store.commit('setDepositSum', response.data)
         return response.status === 200;

@@ -1,5 +1,9 @@
 package com.blackJack.service;
 
+
+import java.security.Principal;
+import java.util.List;
+
 import com.blackJack.dbo.Bet;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.User;
@@ -13,9 +17,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.security.Principal;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class BetService {
         final GameEntity gameById = gameService.getGameById(placeDto.getGameId());
         if (me.getUserInfo() != null && !gameById.isGameLoaded()) {
             final double depositSum = me.getUserInfo().getDepositSum();
-            if (depositSum >= placeDto.getBetSum()) {
+            if (placeDto.getBetSum() != 0 && depositSum >= placeDto.getBetSum()) {
                 final Bet bet = new Bet();
                 bet.setBetStatus(BetStatus.PLACED);
                 bet.setGameEntity(gameById);
