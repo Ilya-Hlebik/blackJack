@@ -1,8 +1,8 @@
 <template>
   <div>
     <error-notification
-      v-if="showErrorNotification"
-      @closeNotification="showErrorNotification = false"
+      :class="notificationClass"
+      @closeNotification="showErrorNotification(false)"
       warningTitle="Error."
       warningDescription="You can't place more than deposit"></error-notification>
     <div class="bets-container">
@@ -64,13 +64,14 @@
           value: 100
         }],
         betSum: 0,
-        showErrorNotification: false
+        notificationClass:"visibility-hidden"
       }
     },
     computed: {
       ...mapGetters('login', {
         depositSum: 'depositSum'
       }),
+
     },
     methods: {
       ...mapActions('bets', {
@@ -79,16 +80,25 @@
       addChip(value) {
         new Audio(require('@/assets/sounds/chips.wav')).play();
         if (this.depositSum - value < 0) {
-          this.showErrorNotification = true;
+          this.showErrorNotification(true);
         } else {
           this.calculateSum(value);
         }
       },
+      showErrorNotification(data) {
+        this.notificationClass = data ? "visibility-visible" : "visibility-hidden";
+      }
     }
   }
 </script>
 
 <style lang="scss" scoped>
+  .visibility-hidden{
+    visibility:hidden;
+  }
+  .visibility-visible{
+    visibility:visible;
+  }
   .bets, .bets-container {
     display: flex;
   }

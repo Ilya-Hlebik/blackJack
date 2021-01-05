@@ -44,9 +44,10 @@
       </div>
       <div class="ml-60">
         <button class="button new-game-button" :disabled="betSum === 0" v-show="finishBetsShowed" @click="finishBets"><span>Finish Bets</span></button>
-        <button class="button" :disabled="moreDisabled" @click="hit(game.id)" v-show="!finishBetsShowed"><span>Hit</span>
-        </button>
-        <button class="button" :disabled="doneDisabled" @click="doneGame" v-show="!finishBetsShowed"><span>Stand</span></button>
+        <div v-show="!finishBetsShowed" class="game-buttons">
+          <button class="button" :disabled="moreDisabled" @click="hit(game.id)"><span>Hit</span></button>
+          <button class="button" :disabled="doneDisabled" @click="doneGame"><span>Stand</span></button>
+        </div>
         <div>
           <bets v-if="finishBetsShowed"></bets>
         </div>
@@ -180,7 +181,7 @@
 
   @media screen and (max-width: 1300px) {
     .middle-of-field {
-      margin-top: 1%;
+      margin-top: 4%;
       height: 135px;
       margin-bottom: 15%;
     }
@@ -188,9 +189,9 @@
 
   @media screen and(min-width: 1300px) and (max-width: 2000px) {
     .middle-of-field {
-      margin-top: 2%;
+      margin-top: 6%;
       height: 250px;
-      margin-bottom: 2%;
+      margin-bottom: 6%;
     }
   }
 
@@ -250,6 +251,8 @@
   }
 
   .new-game-button {
+    position: relative;
+    left: 10px;
     width: 200px;
     height: 50px;
 
@@ -272,5 +275,10 @@
   .player-carts {
     position: fixed;
     padding-bottom: 50px;
+  }
+
+  .game-buttons {
+    position: relative;
+    bottom: 115px;
   }
 </style>

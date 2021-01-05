@@ -83,6 +83,7 @@
     text-shadow: 2px 1px #00040a;
     transition: 0.5s;
     cursor: pointer;
+    margin-bottom: 0;
   }
 
   .alert-danger:hover {
