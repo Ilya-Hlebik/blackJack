@@ -43,7 +43,8 @@
         </transition-group>
       </div>
       <div class="ml-60">
-        <button class="button new-game-button" :disabled="betSum === 0" v-show="finishBetsShowed" @click="finishBets"><span>Finish Bets</span></button>
+        <button class="button new-game-button bet-buttons btn-danger" :disabled="betSum === 0" v-show="finishBetsShowed" @click="finishBets"><span>Clear Bet</span></button>
+        <button class="button new-game-button bet-buttons" :disabled="betSum === 0" v-show="finishBetsShowed" @click="finishBets"><span>Finish Bets</span></button>
         <div v-show="!finishBetsShowed" class="game-buttons">
           <button class="button" :disabled="moreDisabled" @click="hit(game.id)"><span>Hit</span></button>
           <button class="button" :disabled="doneDisabled" @click="doneGame"><span>Stand</span></button>
@@ -80,7 +81,7 @@
         new Audio(require('@/assets/sounds/hit.wav')).play();
         this.addCardToPlayer(gameId);
       },
-      finishBets() {
+      clearBets() {
         new Audio(require('@/assets/sounds/click_main.wav')).play();
         let game = this.loadNewGame({gameId:this.gameId, betSum: this.betSum});
         if (game.gameStatus === 'PLAYER_BJ') {
@@ -251,8 +252,8 @@
   }
 
   .new-game-button {
-    position: relative;
-    left: 10px;
+/*    position: relative;
+    left: 10px;*/
     width: 200px;
     height: 50px;
 
@@ -262,6 +263,13 @@
       font-size: 20px;
       font-weight: bolder;
     }
+  }
+
+  .bet-buttons{
+    position: relative;
+    width: 140px;
+    height: 50px;
+    right: 25px;
   }
 
   .mt--3 {
