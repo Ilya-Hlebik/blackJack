@@ -79,8 +79,8 @@ export default {
       state.user.userInfo.depositSum = data;
     },
     updateDepositAmount(state,data){
-      return state.user.userInfo.depositSum = state.user.userInfo.depositSum - data;
-    }
+      return state.user.userInfo.depositSum -= data;
+    },
   },
   actions: {
     async signIn(store, data) {

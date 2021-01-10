@@ -211,7 +211,7 @@ public class GameService
             {
                 gameEntity.setGameStatus(GameStatus.DRAW);
             }
-            else
+            else if(!playerBj)
             {
                 gameEntity.setGameStatus(GameStatus.PLAYER_WON);
             }

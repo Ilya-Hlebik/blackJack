@@ -118,7 +118,6 @@ export default {
       data.dealerSum = store.state.game.dealerSum;
       data.dealerAltSum = store.state.game.dealerAltSum;
       gameStatus = data.gameStatus;
-      data.gameStatus = '';
       data.gameFinished = false;
       store.commit('setStateGame', data);
       const timeoutPromise = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));

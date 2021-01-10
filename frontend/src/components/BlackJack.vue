@@ -43,7 +43,7 @@
         </transition-group>
       </div>
       <div class="ml-60">
-        <button class="button new-game-button bet-buttons btn-danger" :disabled="betSum === 0" v-show="finishBetsShowed" @click="finishBets"><span>Clear Bet</span></button>
+        <button class="button new-game-button bet-buttons btn-danger" :disabled="betSum === 0" v-show="finishBetsShowed" @click="clearBets"><span>Clear Bet</span></button>
         <button class="button new-game-button bet-buttons" :disabled="betSum === 0" v-show="finishBetsShowed" @click="finishBets"><span>Finish Bets</span></button>
         <div v-show="!finishBetsShowed" class="game-buttons">
           <button class="button" :disabled="moreDisabled" @click="hit(game.id)"><span>Hit</span></button>
@@ -55,7 +55,6 @@
       </div>
     </div>
     <score></score>
-    <audio ref="audioElm" src="src/assets/sounds/shufle_main.wav"></audio>
   </div>
 </template>
 
@@ -81,12 +80,16 @@
         new Audio(require('@/assets/sounds/hit.wav')).play();
         this.addCardToPlayer(gameId);
       },
-      clearBets() {
+      finishBets() {
         new Audio(require('@/assets/sounds/click_main.wav')).play();
         let game = this.loadNewGame({gameId:this.gameId, betSum: this.betSum});
         if (game.gameStatus === 'PLAYER_BJ') {
           this.dealerTurns(this.gameId);
         }
+      },
+      clearBets() {
+        new Audio(require('@/assets/sounds/chips.wav')).play();
+        this.clearBetsAction();
       },
       ...mapActions('main', {
         dealerTurns: 'dealerTurns',
@@ -94,15 +97,18 @@
         loadExistingGame: 'loadExistingGame',
         loadNewGame: 'loadNewGame',
       }),
+      ...mapActions('bets', {
+        clearBetsAction: 'clearBets',
+      }),
       ...mapMutations('main', {
         clearDealerCards: 'clearDealerCards',
         setStartNewGameClicked: 'setStartNewGameClicked'
       }),
       ...mapMutations('bets', {
-        clearBets: 'clearBets',
+        setBetSum: 'setBetSum',
       }),
       loadBoard() {
-        this.clearBets();
+        this.setBetSum(0);
         let game = this.loadExistingGame(this.gameId);
         if (game !== null) {
           if (!game.gameFinished) {
@@ -184,7 +190,7 @@
     .middle-of-field {
       margin-top: 4%;
       height: 135px;
-      margin-bottom: 15%;
+      margin-bottom: 7%;
     }
   }
 
