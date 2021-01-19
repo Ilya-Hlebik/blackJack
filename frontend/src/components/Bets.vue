@@ -4,9 +4,8 @@
       :class="notificationClass"
       @closeNotification="showErrorNotification(false)"
       warningTitle="Error."
-      warningDescription="You can't place more than deposit"></error-notification>
-    <div class="bets-container">
-      <div>
+      warningDescription="You can't place more than deposit. Placed full deposit"></error-notification>
+      <div class="bet-container">
         <div class="bets">
           <img class="chips" @click="addChip(image.value)" v-for="image in firstImageRow"
                :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
@@ -17,7 +16,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -80,6 +78,7 @@
       addChip(value) {
         new Audio(require('@/assets/sounds/chips.wav')).play();
         if (this.depositSum - value < 0) {
+          this.calculateSum(this.depositSum);
           this.showErrorNotification(true);
         } else {
           this.calculateSum(value);
@@ -99,7 +98,7 @@
   .visibility-visible{
     visibility:visible;
   }
-  .bets, .bets-container {
+  .bets {
     display: flex;
   }
 
@@ -123,5 +122,9 @@
 
   .chips:active {
     transform: translateY(4px);
+  }
+  .bet-container{
+    position: relative;
+    left: 70px;
   }
 </style>
