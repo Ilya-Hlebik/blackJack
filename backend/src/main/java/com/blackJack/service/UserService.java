@@ -1,8 +1,17 @@
 package com.blackJack.service;
 
+
+import java.security.Principal;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.blackJack.dbo.BlackList;
 import com.blackJack.dbo.EmailConfirmation;
 import com.blackJack.dbo.User;
+import com.blackJack.dbo.UserInfo;
 import com.blackJack.dto.ForgotPasswordRequestDto;
 import com.blackJack.dto.PasswordUpdateRequestDto;
 import com.blackJack.dto.SignInRequestDTO;
@@ -17,6 +26,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,13 +34,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.security.Principal;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
 
 import static com.blackJack.security.JwtTokenProvider.REFRESH_TOKEN;
 
@@ -50,10 +53,13 @@ public class UserService extends AbstractService<User> {
 
     private final EmailService emailService;
 
+    private final UserInfoService userInfoService;
+
     public UserService(final AbstractRepository<User> repository, final ModelMapper modelMapper,
-                       final BlackListRepository blackListRepository, final PasswordEncoder passwordEncoder,
-                       final JwtTokenProvider jwtTokenProvider, final AuthenticationManager authenticationManager,
-                       final EmailRepository emailRepository, final EmailService emailService) {
+            final BlackListRepository blackListRepository, final PasswordEncoder passwordEncoder,
+            final JwtTokenProvider jwtTokenProvider, final AuthenticationManager authenticationManager,
+            final EmailRepository emailRepository, final EmailService emailService,
+            @Lazy  final UserInfoService userInfoService) {
         super(repository, modelMapper);
         this.blackListRepository = blackListRepository;
         this.passwordEncoder = passwordEncoder;
@@ -61,6 +67,7 @@ public class UserService extends AbstractService<User> {
         this.authenticationManager = authenticationManager;
         this.emailRepository = emailRepository;
         this.emailService = emailService;
+        this.userInfoService = userInfoService;
     }
 
     public User signIn(final SignInRequestDTO signInRequestDTO, final HttpServletResponse res) {
@@ -77,10 +84,20 @@ public class UserService extends AbstractService<User> {
         }
     }
 
-    public User signUp(final SignUpRequestDTO user, final boolean active) {
-        if (!((UserRepository) repository).existsByUsername(user.getUsername())) {
-            return save(new User(user.getRoles(), user.getUsername(), user.getEmail(), passwordEncoder.encode(user.getPassword()), active, null));
-        } else {
+    public User signUp(final SignUpRequestDTO signUpRequestDTO, final boolean active) {
+        if (!((UserRepository) repository).existsByUsername(signUpRequestDTO.getUsername())){
+            final User user = save(
+                    new User(signUpRequestDTO.getRoles(), signUpRequestDTO.getUsername(), signUpRequestDTO.getEmail(),
+                            passwordEncoder.encode(signUpRequestDTO.getPassword()), active, null));
+            final UserInfo userInfo = userInfoService
+                    .save(new UserInfo(signUpRequestDTO.getUsername(), signUpRequestDTO.getPhone(),
+                            signUpRequestDTO.getCity(), signUpRequestDTO.getStreetAddress(), 0,
+                            user));
+            user.setUserInfo(userInfo);
+            return save(user);
+        }
+        else
+        {
             throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }

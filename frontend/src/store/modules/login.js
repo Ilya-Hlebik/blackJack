@@ -126,6 +126,9 @@ export default {
           username: data.username,
           email: data.email,
           password: data.password,
+          phone: data.phone,
+          city: data.city,
+          streetAddress: data.streetAddress,
           roles: ['ROLE_CLIENT']
         });
         return response.status === 200;
