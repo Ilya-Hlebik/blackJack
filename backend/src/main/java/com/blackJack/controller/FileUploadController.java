@@ -24,12 +24,21 @@ public class FileUploadController
 
 
     @GetMapping("/files/{filename:.+}")
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename)
+    public ResponseEntity<Resource> serveFile(@PathVariable final String filename)
     {
-        Resource file = storageService.loadAsResource(filename);
+        final Resource file = storageService.loadAsResource(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + file.getFilename() + "\"")
                 .body(file);
     }
+    @GetMapping("/card/{filename:.+}")
+    public ResponseEntity<Resource> serveCard(@PathVariable final String filename)
+    {
+        final Resource file = storageService.loadAsResource(filename, "/cards");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + file.getFilename() + "\"")
+                .body(file);
+}
 }

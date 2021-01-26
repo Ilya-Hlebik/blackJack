@@ -2,7 +2,11 @@ package com.blackJack.dbo;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -35,4 +39,7 @@ public class UserInfo extends AbstractEntity {
     @JsonIgnore
     @DBRef
     private User user;
+
+    @Field(name = "IMAGE_URL")
+    private String imageUrl;
 }

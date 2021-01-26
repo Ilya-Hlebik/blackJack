@@ -122,7 +122,8 @@ export default {
     },
     async signUp(store, data) {
       try {
-        const response = await axios.post('/backend/users/signup', {
+        data.formData.delete("user");
+        data.formData.append('user', new Blob([JSON.stringify({
           username: data.username,
           email: data.email,
           password: data.password,
@@ -130,6 +131,13 @@ export default {
           city: data.city,
           streetAddress: data.streetAddress,
           roles: ['ROLE_CLIENT']
+        })], {
+          type: "application/json"
+        }))
+        const response = await axios.post('/backend/users/signup', data.formData, {
+          headers: {
+            "Content-Type": undefined
+          }
         });
         return response.status === 200;
       } catch (error) {

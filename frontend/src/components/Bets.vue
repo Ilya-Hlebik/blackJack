@@ -92,12 +92,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .visibility-hidden{
-    visibility:hidden;
-  }
-  .visibility-visible{
-    visibility:visible;
-  }
+
   .bets {
     display: flex;
   }

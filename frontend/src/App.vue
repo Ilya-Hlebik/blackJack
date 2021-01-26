@@ -166,4 +166,10 @@
     -webkit-transform: rotate(40deg);
     transform: rotate(40deg);
   }
+  .visibility-hidden{
+    visibility:hidden;
+  }
+  .visibility-visible{
+    visibility:visible;
+  }
 </style>

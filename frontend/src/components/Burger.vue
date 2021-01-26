@@ -1,5 +1,6 @@
 <template>
   <slide  right   :closeOnNavigation="true">
+    <img v-show="isLogged" class="anonymous-icon" :src="user.userInfo.imageUrl">
     <a v-show="!isLogged" href="javaScript:" @click="openAuthorizationForm">
       <span class="bm-item">Login</span>
     </a>
@@ -49,9 +50,10 @@
             Slide
         },
         computed: {
-            ...mapGetters('login', {
-                isLogged: 'isLogged'
-            })
+          ...mapGetters('login', {
+            isLogged: 'isLogged',
+            user: 'user'
+          })
         }
     };
 </script>

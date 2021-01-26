@@ -12,7 +12,7 @@
       </transition-group>
       <transition name="custom-classes-transition2"
                   leave-active-class="animate__animated animate__flipOutY  animate__faster" mode="out-in">
-        <img class="carts" v-show="game.dealerCards.length === 1" src="/backend/storage/files/Gray_back.jpg"
+        <img class="carts" v-show="game.dealerCards.length === 1" src="/backend/storage/card/Gray_back.jpg"
              alt="карта1"
              key="CB">
       </transition>

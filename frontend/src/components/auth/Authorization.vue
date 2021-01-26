@@ -93,7 +93,6 @@
   }
 
   .anonymous-icon {
-    height: 120px;
     width: 120px;
     border-radius: 50%;
     margin-bottom: 30px;

@@ -34,12 +34,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.blackJack.security.JwtTokenProvider.REFRESH_TOKEN;
 
 
 @Service
 public class UserService extends AbstractService<User> {
+
+    public static final String IMAGE_PREFIX = "/backend/storage/files/";
 
     private final BlackListRepository blackListRepository;
 
@@ -55,11 +58,13 @@ public class UserService extends AbstractService<User> {
 
     private final UserInfoService userInfoService;
 
+    private final StorageService storageService;
+
     public UserService(final AbstractRepository<User> repository, final ModelMapper modelMapper,
             final BlackListRepository blackListRepository, final PasswordEncoder passwordEncoder,
             final JwtTokenProvider jwtTokenProvider, final AuthenticationManager authenticationManager,
             final EmailRepository emailRepository, final EmailService emailService,
-            @Lazy  final UserInfoService userInfoService) {
+            @Lazy final UserInfoService userInfoService, final StorageService storageService) {
         super(repository, modelMapper);
         this.blackListRepository = blackListRepository;
         this.passwordEncoder = passwordEncoder;
@@ -68,6 +73,7 @@ public class UserService extends AbstractService<User> {
         this.emailRepository = emailRepository;
         this.emailService = emailService;
         this.userInfoService = userInfoService;
+        this.storageService = storageService;
     }
 
     public User signIn(final SignInRequestDTO signInRequestDTO, final HttpServletResponse res) {
@@ -84,15 +90,17 @@ public class UserService extends AbstractService<User> {
         }
     }
 
-    public User signUp(final SignUpRequestDTO signUpRequestDTO, final boolean active) {
+    public User signUp(final SignUpRequestDTO signUpRequestDTO, final MultipartFile image,
+            final boolean active) {
         if (!((UserRepository) repository).existsByUsername(signUpRequestDTO.getUsername())){
             final User user = save(
                     new User(signUpRequestDTO.getRoles(), signUpRequestDTO.getUsername(), signUpRequestDTO.getEmail(),
                             passwordEncoder.encode(signUpRequestDTO.getPassword()), active, null));
+            final String imageUrl = IMAGE_PREFIX + storageService.store(image);
             final UserInfo userInfo = userInfoService
                     .save(new UserInfo(signUpRequestDTO.getUsername(), signUpRequestDTO.getPhone(),
                             signUpRequestDTO.getCity(), signUpRequestDTO.getStreetAddress(), 0,
-                            user));
+                            user, imageUrl));
             user.setUserInfo(userInfo);
             return save(user);
         }
