@@ -28,9 +28,9 @@ public class CardService
     }
 
 
-    public CardEntity findByName(final String dealerCard)
+    public CardEntity findByName(final String cardName)
     {
-        return cardRepository.findByName(dealerCard);
+        return cardRepository.findByName(cardName);
     }
 }
 

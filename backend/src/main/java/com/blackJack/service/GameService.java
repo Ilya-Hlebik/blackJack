@@ -1,6 +1,15 @@
 package com.blackJack.service;
 
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.GameStep;
@@ -11,10 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.Principal;
-import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -128,12 +133,22 @@ public class GameService
 
     private int getAltSumFromCard(final Set<CardEntity> cardEntities)
     {
-        return cardEntities.stream()
+        final List<CardEntity> cardEntitiesWithAces = cardEntities
+                .stream()
+                .filter(cardEntity -> cardEntity.getValue()
+                        .equals("11"))
+                .collect(Collectors.toList());
+        int sum = cardEntities.stream()
                 .map(CardEntity::getValue)
                 .map(Integer::parseInt)
                 .map(value -> value == 11 ? 1 : value)
                 .mapToInt(Integer::intValue)
                 .sum();
+        if (cardEntitiesWithAces.size() > 1)
+        {
+            sum += 10;
+        }
+        return sum;
     }
 
 

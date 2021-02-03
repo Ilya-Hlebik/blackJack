@@ -1,5 +1,8 @@
 package com.blackJack.configuration;
 
+
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,11 +12,9 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
-import java.util.List;
-
 @Configuration
 @EnableRedisRepositories
-@PropertySources({@PropertySource("mail.properties")})
+@PropertySources({@PropertySource("classpath:mail.properties")})
 public class MainConfiguration {
     @Bean
     public ModelMapper modelMapper() {
