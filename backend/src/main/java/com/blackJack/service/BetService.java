@@ -26,7 +26,7 @@ public class BetService {
     @Lazy
     private final GameService gameService;
     private final UserInfoService userInfoService;
-
+    private final LogService logService;
     public Bet getBetByID(final String betID) {
         return betRepository.findById(betID).orElseThrow();
     }
@@ -45,6 +45,7 @@ public class BetService {
                 betRepository.save(bet);
                 me.getUserInfo().setDepositSum(depositSum - placeDto.getBetSum());
                 userInfoService.save(me.getUserInfo());
+                logService.saveLog(gameById, "Place bet with amount " + bet.getAmount() + " EUR");
                 return ResponseEntity.status(HttpStatus.OK).build();
             }
         }
@@ -57,22 +58,31 @@ public class BetService {
         byGameEntity.forEach(bet -> {
             final GameStatus gameStatus = gameEntity.getGameStatus();
             if (GameStatus.DRAW == gameStatus) {
-                payoutBet(user, bet, 1);
+                payoutBet(user, bet, 1, gameEntity);
             } else if (GameStatus.PLAYER_WON == gameStatus) {
-                payoutBet(user, bet, 2);
+                payoutBet(user, bet, 2, gameEntity);
             } else if (GameStatus.PLAYER_BJ == gameStatus) {
-                payoutBet(user, bet, 3);
-            } else if (GameStatus.DEALER_WON != gameStatus) {
+                payoutBet(user, bet, 3, gameEntity);
+            }
+            else if (GameStatus.DEALER_WON == gameStatus)
+            {
+                logService.saveLog(gameEntity,
+                        "Game ended with result: " + gameEntity.getGameStatus() + ". No bets will be payout");
+            }
+            else
+            {
                 throw new RuntimeException();
             }
         });
     }
 
-    private void payoutBet(final User me, final Bet bet, final int betMultiplier) {
+    private void payoutBet(final User me, final Bet bet, final int betMultiplier, final GameEntity gameEntity) {
         final UserInfo userInfo = me.getUserInfo();
         userInfo.setDepositSum(userInfo.getDepositSum() + bet.getAmount() * betMultiplier);
         userInfoService.save(userInfo);
         bet.setProcessed(true);
         betRepository.save(bet);
+        logService.saveLog(gameEntity,
+                "Payout bet in amount: " + bet.getAmount() * betMultiplier + " EUR");
     }
 }

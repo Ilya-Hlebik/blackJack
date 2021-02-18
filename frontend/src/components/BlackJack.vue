@@ -51,6 +51,7 @@
         </div>
         <div>
           <bets v-if="finishBetsShowed"></bets>
+          <log-window v-if="!finishBetsShowed"></log-window>
         </div>
       </div>
     </div>
@@ -61,6 +62,7 @@
 <script>
   import {mapActions, mapGetters, mapMutations} from 'vuex';
   import Bets from '../components/Bets';
+  import LogWindow from '../components/LogWindow';
   import Score from '../components/Score';
 
   export default {
@@ -160,7 +162,7 @@
       }
     },
     components: {
-      Bets, Score
+      Bets, Score, LogWindow
     }
   }
 </script>
@@ -258,8 +260,6 @@
   }
 
   .new-game-button {
-/*    position: relative;
-    left: 10px;*/
     width: 200px;
     height: 50px;
 
@@ -288,11 +288,11 @@
 
   .player-carts {
     position: fixed;
-    padding-bottom: 50px;
+    bottom: 100px;
   }
 
   .game-buttons {
     position: relative;
-    bottom: 115px;
+    bottom: 160px;
   }
 </style>

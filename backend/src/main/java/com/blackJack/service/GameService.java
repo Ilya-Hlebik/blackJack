@@ -2,7 +2,6 @@ package com.blackJack.service;
 
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -36,6 +35,8 @@ public class GameService
     @Lazy
     private final BetService betService;
 
+    private final LogService logService;
+
     public String createGame(final Principal req)
     {
         final List<String> deck = cardService.getDeck()
@@ -48,7 +49,7 @@ public class GameService
         return gameRepository.save(
                 new GameEntity(new LinkedHashSet<>(deck), Collections.emptySet(), Collections.emptySet(), 0, 0, 0, 0,
                         false,
-                        GameStatus.IN_PROGRESS, false,user, Collections.emptyList()))
+                        GameStatus.IN_PROGRESS, false,user, Collections.emptyList(), Collections.emptyList()))
                 .getId();
     }
 
@@ -99,10 +100,11 @@ public class GameService
                     .remove(dealerCard);
             final CardEntity cardEntity = cardService.findByName(dealerCard);
             game.setDealerCards(Collections.singleton(cardEntity));
-            final int value = Integer.parseInt(cardEntity.getValue());
-            game.setDealerSum(value);
-            game.setDealerAltSum(value == 11 ? 1 : value);
+            game.setDealerSum(getSumFromCard(Set.of(cardEntity)));
+            game.setDealerAltSum(getAltSumFromCard(Set.of(cardEntity)));
             save(game);
+            logService.saveLog(game, "Dealer card: " + cardEntity.getName() +
+                    " dealer sum: " + game.getDealerSum() + " dealer alt sum: " + game.getDealerAltSum());
         }
     }
 
@@ -127,6 +129,9 @@ public class GameService
             game.setPlayerAltSum(getAltSumFromCard(collect));
             game.setGameLoaded(true);
             save(game);
+            logService.saveLog(game,
+                    "Player cards: " + collect.stream().map(CardEntity::getName).collect(Collectors.joining(",")) +
+                            " player sum: " + game.getPlayerSum() + " player alt sum: " + game.getPlayerAltSum());
         }
     }
 
@@ -144,7 +149,7 @@ public class GameService
                 .map(value -> value == 11 ? 1 : value)
                 .mapToInt(Integer::intValue)
                 .sum();
-        if (cardEntitiesWithAces.size() > 1)
+        if (cardEntitiesWithAces.size() > 1 && sum + 10 <= 21)
         {
             sum += 10;
         }
@@ -165,7 +170,6 @@ public class GameService
     public GameEntity dealerTurns(final Principal principal, final String gameId)
     {
         final GameEntity gameEntity = getGameById(gameId);
-        final List<GameStep> stepsToSave = new ArrayList<>();
         if (!gameEntity.isGameFinished())
         {
             final int playerMainSum =
@@ -208,12 +212,17 @@ public class GameService
                 final GameStep step = new GameStep(gameEntity.getId(), lastStep.getStepNumber() + 1,
                         gameEntity.getPlayerSum(),
                         gameEntity.getPlayerAltSum(), recalculateDealerSum(dealerSum, gameEntity), dealerAltSum);
+                final GameStep savedStep = stepService.save(step);
                 gameEntity.getGameSteps()
-                        .add(step);
-                stepsToSave.add(step);
+                        .add(savedStep);
+                logService.saveLog(gameEntity,
+                        "Dealer hit with: " + cardEntity.getName() +
+                                " dealer sum: " + dealerSum + " dealer alt sum: " + dealerAltSum);
             }
             dealerSum = recalculateDealerSum(dealerSum, gameEntity);
             final int dealerMainSum = dealerSum > 21 ? dealerAltSum : dealerSum;
+            logService.saveLog(gameEntity,
+                    "Dealer final sum: " + dealerMainSum);
             final boolean dealerBJ = dealerMainSum == 21 && gameEntity.getDealerCards()
                     .size() == 2;
             final boolean playerBj = GameStatus.PLAYER_BJ.equals(
@@ -233,7 +242,8 @@ public class GameService
             gameEntity.setGameFinished(true);
             gameEntity.setDealerAltSum(dealerAltSum);
             gameEntity.setDealerSum(dealerSum);
-            stepService.saveAll(stepsToSave);
+            logService.saveLog(gameEntity,
+                    "Game ended with result: " + gameEntity.getGameStatus());
             save(gameEntity);
             betService.calculateBets(principal, gameEntity);
         }
@@ -293,6 +303,10 @@ public class GameService
             final int altSumFromCard = getAltSumFromCard(gameEntity.getPlayerCards());
             gameEntity.setPlayerSum(sumFromCard);
             gameEntity.setPlayerAltSum(altSumFromCard);
+            logService.saveLog(gameEntity,
+                    "Player hit with: " + cardEntity.getName() +
+                            " player sum: " + gameEntity.getPlayerSum() + " player alt sum: " + gameEntity
+                            .getPlayerAltSum());
             if (sumFromCard > 21 && altSumFromCard > 21)
             {
                 gameEntity.setGameStatus(GameStatus.DEALER_WON);
