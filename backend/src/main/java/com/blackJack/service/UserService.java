@@ -17,7 +17,6 @@ import com.blackJack.dto.PasswordUpdateRequestDto;
 import com.blackJack.dto.SignInRequestDTO;
 import com.blackJack.dto.SignUpRequestDTO;
 import com.blackJack.exception.CustomException;
-import com.blackJack.repository.AbstractRepository;
 import com.blackJack.repository.BlackListRepository;
 import com.blackJack.repository.EmailRepository;
 import com.blackJack.repository.UserRepository;
@@ -40,7 +39,7 @@ import static com.blackJack.security.JwtTokenProvider.REFRESH_TOKEN;
 
 
 @Service
-public class UserService extends AbstractService<User> {
+public class UserService extends AbstractService<User,UserRepository> {
 
     public static final String IMAGE_PREFIX = "/backend/storage/files/";
 
@@ -60,7 +59,7 @@ public class UserService extends AbstractService<User> {
 
     private final StorageService storageService;
 
-    public UserService(final AbstractRepository<User> repository, final ModelMapper modelMapper,
+    public UserService(final UserRepository repository, final ModelMapper modelMapper,
             final BlackListRepository blackListRepository, final PasswordEncoder passwordEncoder,
             final JwtTokenProvider jwtTokenProvider, final AuthenticationManager authenticationManager,
             final EmailRepository emailRepository, final EmailService emailService,
@@ -79,7 +78,7 @@ public class UserService extends AbstractService<User> {
     public User signIn(final SignInRequestDTO signInRequestDTO, final HttpServletResponse res) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequestDTO.getUsername(), signInRequestDTO.getPassword()));
-            final User user = ((UserRepository) repository).findByUsername(signInRequestDTO.getUsername());
+            final User user = repository.findByUsername(signInRequestDTO.getUsername());
             if (!user.isActive()) {
                 throw new CustomException("Invalid password, please change", HttpStatus.NON_AUTHORITATIVE_INFORMATION);
             }
@@ -92,7 +91,7 @@ public class UserService extends AbstractService<User> {
 
     public User signUp(final SignUpRequestDTO signUpRequestDTO, final MultipartFile image,
             final boolean active) {
-        if (!((UserRepository) repository).existsByUsername(signUpRequestDTO.getUsername())){
+        if (!repository.existsByUsername(signUpRequestDTO.getUsername())){
             final User user = save(
                     new User(signUpRequestDTO.getRoles(), signUpRequestDTO.getUsername(), signUpRequestDTO.getEmail(),
                             passwordEncoder.encode(signUpRequestDTO.getPassword()), active, null));
@@ -115,11 +114,11 @@ public class UserService extends AbstractService<User> {
     }
 
     public void delete(final String username) {
-        ((UserRepository) repository).deleteByUsername(username);
+        repository.deleteByUsername(username);
     }
 
     public User search(final String username) {
-        final User user = ((UserRepository) repository).findByUsername(username);
+        final User user = repository.findByUsername(username);
         if (user == null) {
             throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
         }
@@ -145,7 +144,7 @@ public class UserService extends AbstractService<User> {
             if (updateRequestDto.getNewPasswordFirstEntry().equals(updateRequestDto.getOldPassword())) {
                 throw new CustomException("Old password and new password shouldn't be the same", HttpStatus.BAD_REQUEST);
             }
-            final User user = ((UserRepository) repository).findByUsername(updateRequestDto.getUsername());
+            final User user = repository.findByUsername(updateRequestDto.getUsername());
             user.setPassword(passwordEncoder.encode(updateRequestDto.getNewPasswordFirstEntry()));
             user.setActive(true);
             return repository.save(user);
@@ -158,7 +157,7 @@ public class UserService extends AbstractService<User> {
         final boolean valid = emailService.verifyToken(forgotPasswordRequestDto.getToken());
         if (valid) {
             final EmailConfirmation confirmationByToken = emailService.findConfirmationByToken(forgotPasswordRequestDto.getToken());
-            final Optional<User> userOptional = ((UserRepository) repository)
+            final Optional<User> userOptional = repository
                     .findByEmail(confirmationByToken.getId());
             if (userOptional.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -173,6 +172,6 @@ public class UserService extends AbstractService<User> {
     }
 
     public User findMe(final Principal req) {
-        return ((UserRepository) repository).findByUsername(req.getName());
+        return repository.findByUsername(req.getName());
     }
 }

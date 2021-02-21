@@ -5,32 +5,35 @@ import java.util.List;
 
 import com.blackJack.dbo.CardEntity;
 import com.blackJack.repository.CardRepository;
-import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 
 @Service
-@RequiredArgsConstructor
-public class CardService
+public class CardService extends AbstractService<CardEntity, CardRepository>
 {
-    private final CardRepository cardRepository;
+
+    public CardService(final CardRepository repository, final ModelMapper modelMapper)
+    {
+        super(repository, modelMapper);
+    }
 
 
     public CardEntity getCardBack()
     {
-        return cardRepository.findByName("CB");
+        return repository.findByName("CB");
     }
 
 
     public List<CardEntity> getDeck()
     {
-        return cardRepository.findAll();
+        return repository.findAll();
     }
 
 
     public CardEntity findByName(final String cardName)
     {
-        return cardRepository.findByName(cardName);
+        return repository.findByName(cardName);
     }
 }
 

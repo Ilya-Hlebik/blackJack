@@ -6,26 +6,29 @@ import java.security.Principal;
 import com.blackJack.dbo.User;
 import com.blackJack.dbo.UserInfo;
 import com.blackJack.dto.UserInfoDto;
-import com.blackJack.repository.AbstractRepository;
 import com.blackJack.repository.UserInfoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class UserInfoService extends AbstractService<UserInfo> {
-    private final UserService userService;
-    private final UserInfoRepository userInfoRepository;
 
-    public UserInfoService(final AbstractRepository<UserInfo> repository, final ModelMapper modelMapper,
-            final UserService userService, final UserInfoRepository userInfoRepository) {
+@Service
+public class UserInfoService extends AbstractService<UserInfo, UserInfoRepository>
+{
+    private final UserService userService;
+
+
+    public UserInfoService(final UserInfoRepository repository, final ModelMapper modelMapper,
+            final UserService userService)
+    {
         super(repository, modelMapper);
         this.userService = userService;
-        this.userInfoRepository = userInfoRepository;
     }
 
+
     @Transactional
-    public User saveUserInfo(final Principal principal, final UserInfoDto userInfoDto) {
+    public User saveUserInfo(final Principal principal, final UserInfoDto userInfoDto)
+    {
         final User user = userService.findMe(principal);
         final UserInfo userInfo = new UserInfo();
         modelMapper.map(userInfoDto, userInfo);
@@ -38,7 +41,7 @@ public class UserInfoService extends AbstractService<UserInfo> {
 
     public UserInfo save(final UserInfo userInfo)
     {
-      return repository.save(userInfo);
+        return repository.save(userInfo);
     }
 
 
@@ -52,6 +55,7 @@ public class UserInfoService extends AbstractService<UserInfo> {
         save(userInfo);
         return userInfo;
     }
+
 
     @Transactional
     public double depositSum(final Principal principal, final Double depositSum)

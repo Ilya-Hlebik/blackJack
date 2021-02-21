@@ -15,27 +15,38 @@ import com.blackJack.dbo.GameStep;
 import com.blackJack.dbo.User;
 import com.blackJack.enumeration.GameStatus;
 import com.blackJack.repository.GameRepository;
-import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@RequiredArgsConstructor
-public class GameService
+public class GameService extends AbstractService<GameEntity, GameRepository>
 {
     private final CardService cardService;
-
-    private final GameRepository gameRepository;
 
     private final StepService stepService;
 
     private final UserService userService;
-    @Lazy
+
     private final BetService betService;
 
     private final LogService logService;
+
+
+    public GameService(final GameRepository repository, final ModelMapper modelMapper,
+            final CardService cardService, final StepService stepService, final UserService userService,
+            @Lazy final BetService betService, final LogService logService)
+    {
+        super(repository, modelMapper);
+        this.cardService = cardService;
+        this.stepService = stepService;
+        this.userService = userService;
+        this.betService = betService;
+        this.logService = logService;
+    }
+
 
     public String createGame(final Principal req)
     {
@@ -46,7 +57,7 @@ public class GameService
                 .collect(Collectors.toList());
         Collections.shuffle(deck);
         final User user = userService.findMe(req);
-        return gameRepository.save(
+        return repository.save(
                 new GameEntity(new LinkedHashSet<>(deck), Collections.emptySet(), Collections.emptySet(), 0, 0, 0, 0,
                         false,
                         GameStatus.IN_PROGRESS, false,user, Collections.emptyList(), Collections.emptyList()))
@@ -56,14 +67,14 @@ public class GameService
 
     public GameEntity getGameById(final String gameId)
     {
-        return gameRepository.findById(gameId)
+        return repository.findById(gameId)
                 .orElseThrow();
     }
 
 
     public void save(final GameEntity game)
     {
-        gameRepository.save(game);
+        repository.save(game);
     }
 
 
@@ -327,6 +338,6 @@ public class GameService
 
     public GameEntity getGame(final String gameId, final Principal principal) {
         final User user = userService.findMe(principal);
-        return gameRepository.findByUserAndId(user, gameId).orElseThrow();
+        return repository.findByUserAndId(user, gameId).orElseThrow();
     }
 }

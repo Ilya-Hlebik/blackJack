@@ -12,23 +12,38 @@ import com.blackJack.dto.PlaceDto;
 import com.blackJack.enumeration.BetStatus;
 import com.blackJack.enumeration.GameStatus;
 import com.blackJack.repository.BetRepository;
-import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+
 @Service
-@RequiredArgsConstructor
-public class BetService {
-    private final BetRepository betRepository;
+public class BetService extends AbstractService<Bet, BetRepository>
+{
     private final UserService userService;
-    @Lazy
+
     private final GameService gameService;
+
     private final UserInfoService userInfoService;
+
     private final LogService logService;
+
+
+    public BetService(final BetRepository repository, final ModelMapper modelMapper, final UserService userService,
+            @Lazy final GameService gameService, final UserInfoService userInfoService, final LogService logService)
+    {
+        super(repository, modelMapper);
+        this.userService = userService;
+        this.gameService = gameService;
+        this.userInfoService = userInfoService;
+        this.logService = logService;
+    }
+
+
     public Bet getBetByID(final String betID) {
-        return betRepository.findById(betID).orElseThrow();
+        return repository.findById(betID).orElseThrow();
     }
 
 
@@ -42,7 +57,7 @@ public class BetService {
                 bet.setBetStatus(BetStatus.PLACED);
                 bet.setGameEntity(gameById);
                 bet.setAmount(placeDto.getBetSum());
-                betRepository.save(bet);
+                repository.save(bet);
                 me.getUserInfo().setDepositSum(depositSum - placeDto.getBetSum());
                 userInfoService.save(me.getUserInfo());
                 logService.saveLog(gameById, "Place bet with amount " + bet.getAmount() + " EUR");
@@ -53,7 +68,7 @@ public class BetService {
     }
 
     public void calculateBets(final Principal principal, final GameEntity gameEntity) {
-        final List<Bet> byGameEntity = betRepository.findByGameEntityAndProcessedFalse(gameEntity);
+        final List<Bet> byGameEntity = repository.findByGameEntityAndProcessedFalse(gameEntity);
         final User user = userService.findMe(principal);
         byGameEntity.forEach(bet -> {
             final GameStatus gameStatus = gameEntity.getGameStatus();
@@ -81,7 +96,7 @@ public class BetService {
         userInfo.setDepositSum(userInfo.getDepositSum() + bet.getAmount() * betMultiplier);
         userInfoService.save(userInfo);
         bet.setProcessed(true);
-        betRepository.save(bet);
+        repository.save(bet);
         logService.saveLog(gameEntity,
                 "Payout bet in amount: " + bet.getAmount() * betMultiplier + " EUR");
     }

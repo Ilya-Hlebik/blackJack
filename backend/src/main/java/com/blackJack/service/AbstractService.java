@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 
 @AllArgsConstructor
-public abstract class AbstractService<EntityClass extends AbstractEntity> {
-    protected final AbstractRepository<EntityClass> repository;
+public abstract class AbstractService<EntityClass extends AbstractEntity, Repository extends AbstractRepository<EntityClass>> {
+    protected final Repository repository;
     protected final ModelMapper modelMapper;
 }

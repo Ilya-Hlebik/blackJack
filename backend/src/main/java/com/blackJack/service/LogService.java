@@ -5,21 +5,26 @@ import java.util.Date;
 
 import com.blackJack.dbo.GameEntity;
 import com.blackJack.dbo.LogEntity;
-import com.blackJack.repository.GameRepository;
 import com.blackJack.repository.LogRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
 @Service
-@RequiredArgsConstructor
-public class LogService
+public class LogService extends AbstractService<LogEntity, LogRepository>
 {
-    private final LogRepository logRepository;
 
-    private final GameRepository gameRepository;
+    private final GameService gameService;
 
+
+    public LogService(final LogRepository repository, final ModelMapper modelMapper,
+            @Lazy final GameService gameService)
+    {
+        super(repository, modelMapper);
+        this.gameService = gameService;
+    }
 
 
     @SneakyThrows
@@ -29,8 +34,8 @@ public class LogService
         logEntity.setGameEntity(gameEntity);
         logEntity.setDate(new Date());
         logEntity.setMessage(message);
-        final LogEntity save = logRepository.save(logEntity);
+        final LogEntity save = repository.save(logEntity);
         gameEntity.getLogEntities().add(save);
-        gameRepository.save(gameEntity);
+        gameService.save(gameEntity);
     }
 }

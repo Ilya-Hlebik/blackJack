@@ -5,19 +5,28 @@ import java.util.List;
 
 import com.blackJack.dbo.GameStep;
 import com.blackJack.repository.StepRepository;
-import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class StepService {
-    private final StepRepository stepRepository;
 
-    public GameStep save(final GameStep step) {
-        return stepRepository.save(step);
+@Service
+public class StepService extends AbstractService<GameStep, StepRepository>
+{
+
+    public StepService(final StepRepository repository, final ModelMapper modelMapper)
+    {
+        super(repository, modelMapper);
     }
 
-    public void saveAll(final List<GameStep> steps) {
-        stepRepository.saveAll(steps);
+
+    public GameStep save(final GameStep step)
+    {
+        return repository.save(step);
+    }
+
+
+    public void saveAll(final List<GameStep> steps)
+    {
+        repository.saveAll(steps);
     }
 }
