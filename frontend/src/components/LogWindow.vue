@@ -5,7 +5,7 @@
     </header>
     <div class="log-wrapper">
       <div v-for="log in game.logEntities">
-        <div class="time"> {{ new Date(log.date).toISOString() }}</div>
+        <div class="time"> {{ formatDate(log.date) }}</div>
         <div class="message">{{ log.message }}</div>
       </div>
     </div>
@@ -22,6 +22,11 @@
       ...mapGetters('main', {
         game: 'game',
       }),
+    },
+    methods:{
+      formatDate(logDate) {
+        return new Date(logDate).toLocaleString("ru-RU");
+      }
     }
   }
 </script>
