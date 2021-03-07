@@ -1,9 +1,9 @@
-import BlackJack from './components/BlackJack';
+import BlackJack from './components/BlackJack.vue';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import {store} from './store';
-import Menu from './components/Menu';
-import Account from './components/Account';
+import Menu from './components/Menu.vue';
+import Account from './components/Account.vue';
 
 Vue.use(VueRouter);
 

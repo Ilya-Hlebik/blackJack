@@ -17,8 +17,8 @@
 </template>
 
 <script>
-  import Burger from './components/Burger';
-  import Authorization from './components/auth/Authorization';
+  import Burger from './components/Burger.vue';
+  import Authorization from './components/auth/Authorization.vue';
   import {mapActions} from 'vuex';
 
   export default {

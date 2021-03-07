@@ -9,11 +9,11 @@
       <div>
         <div class="bets">
           <img class="chips" @click="addChip(image.value)" v-for="image in firstImageRow"
-               :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
+               :src="require(`../assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
         </div>
         <div class="bets">
           <img class="chips" @click="addChip(image.value)" v-for="image in secondImageRow"
-               :src="require(`@/assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
+               :src="require(`../assets/images/${image.name}.png`)" :title="image.title" :key="image.name">
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
 
 <script>
   import {mapActions, mapGetters} from "vuex";
-  import ErrorNotification from './ErrorNotification';
+  import ErrorNotification from './ErrorNotification.vue';
 
   export default {
     name: "Bets",
@@ -78,7 +78,7 @@
         calculateSum: 'calculateSum',
       }),
       addChip(value) {
-        new Audio(require('@/assets/sounds/chips.wav')).play();
+        new Audio(require('../assets/sounds/chips.wav')).play();
         if (this.depositSum - value < 0) {
           this.showErrorNotification(true);
         } else {

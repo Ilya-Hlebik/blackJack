@@ -60,8 +60,8 @@
 
 <script>
   import {mapActions, mapGetters, mapMutations} from 'vuex';
-  import Bets from '../components/Bets';
-  import Score from '../components/Score';
+  import Bets from '../components/Bets.vue';
+  import Score from '../components/Score.vue';
 
   export default {
     name: 'BlackJack',
@@ -73,22 +73,22 @@
     methods: {
       doneGame() {
         this.doneClicked = true;
-        new Audio(require('@/assets/sounds/stand.mp3')).play();
+        new Audio(require('../assets/sounds/stand.mp3')).play();
         this.dealerTurns(this.game.id);
       },
       hit(gameId) {
-        new Audio(require('@/assets/sounds/hit.wav')).play();
+        new Audio(require('../assets/sounds/hit.wav')).play();
         this.addCardToPlayer(gameId);
       },
       finishBets() {
-        new Audio(require('@/assets/sounds/click_main.wav')).play();
+        new Audio(require('../assets/sounds/click_main.wav')).play();
         let game = this.loadNewGame({gameId:this.gameId, betSum: this.betSum});
         if (game.gameStatus === 'PLAYER_BJ') {
           this.dealerTurns(this.gameId);
         }
       },
       clearBets() {
-        new Audio(require('@/assets/sounds/chips.wav')).play();
+        new Audio(require('../assets/sounds/chips.wav')).play();
         this.clearBetsAction();
       },
       ...mapActions('main', {

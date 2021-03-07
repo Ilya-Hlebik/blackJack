@@ -1,5 +1,16 @@
 version: '3.3'
 services:
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend
+    ports:
+      - '81:81'
+    depends_on:
+      - app
+    networks:
+      - springappnetwork
   app:
     build:
       context: .
@@ -7,8 +18,8 @@ services:
     ports:
       - 8091:8091
     depends_on:
-     - mongo
-     - redis
+      - mongo
+      - redis
     environment:
       - RHOST=redis
       - MONGO_DB_HOSTNAME=mongo

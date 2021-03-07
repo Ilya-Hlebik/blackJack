@@ -3,7 +3,7 @@
     <button class="close" @click="needShowLoginFrom(false)">
     </button>
     <form key="login" class="login form-wrapper" @submit.prevent="signIn">
-      <img class="anonymous-icon" src="@/assets/images/work.svg">
+      <img class="anonymous-icon" src="../../assets/images/work.svg">
       <div class="form-group-lg">
         <span class="fa" enter-leave-class="animated tada">
         </span>

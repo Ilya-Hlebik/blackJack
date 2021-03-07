@@ -14,10 +14,10 @@
 
 <script>
   import {mapGetters} from 'vuex';
-  import LoginForm from './LoginForm';
-  import Registration from './RegistrationForm';
-  import ForgotPasswordForm from './ForgotPasswordForm';
-  import RecoverPasswordForm from './RecoverPasswordForm';
+  import LoginForm from './LoginForm.vue';
+  import Registration from './RegistrationForm.vue';
+  import ForgotPasswordForm from './ForgotPasswordForm.vue';
+  import RecoverPasswordForm from './RecoverPasswordForm.vue';
 
 
   export default {

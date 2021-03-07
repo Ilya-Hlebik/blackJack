@@ -3,7 +3,7 @@
     <button class="close" @click="needShowForgotPasswordForm(false)">
     </button>
     <form key="login" class="login form-wrapper " @submit.prevent="send">
-      <img class="anonymous-icon" src="@/assets/images/work.svg">
+      <img class="anonymous-icon" src="../../assets/images/work.svg">
       <div class="form-group-lg m-1 flexRow">
         <input type="text" placeholder="Email" v-model="email" class="form-control">
         <button class="btn btn-success glow-on-hover ml-1">Send</button>

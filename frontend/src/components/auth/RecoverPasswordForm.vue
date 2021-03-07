@@ -5,7 +5,7 @@
         <button class="close" @click="needShowRecoverPasswordForm(false)">
         </button>
         <form key="login" class="login form-wrapper" @submit.prevent="send">
-          <img class="anonymous-icon" src="@/assets/images/work.svg">
+          <img class="anonymous-icon" src="../../assets/images/work.svg">
           <div class="form-group-lg m-1 flexRow">
             <input type="password" placeholder="Password" v-model="password" class="form-control">
             <input type="password" placeholder="Confirm password" v-model="confirmPassword" class="form-control">

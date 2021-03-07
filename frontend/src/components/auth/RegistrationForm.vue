@@ -2,7 +2,7 @@
   <section>
     <button class="close" @click="needShowRegistrationForm(false)"></button>
     <form key="registration" class="login form-wrapper" @submit.prevent="registration" >
-      <img class="anonymous-icon" src="@/assets/images/registration.png">
+      <img class="anonymous-icon" src="../../assets/images/registration.png">
       <div class="form-group-lg">
         <span class="fa" >
         </span>

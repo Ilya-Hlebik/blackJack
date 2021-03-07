@@ -31,7 +31,7 @@
 
 <script>
   import {mapActions, mapGetters, mapMutations} from "vuex";
-  import Notifications from './Notifications';
+  import Notifications from './Notifications.vue';
 
   export default {
     name: "AccountUpdate",

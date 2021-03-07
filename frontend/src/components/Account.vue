@@ -18,9 +18,9 @@
 
 <script>
   import {mapGetters} from "vuex";
-  import AccountUpdate from './AccountUpdate';
-  import AccountDeposit from './AccountDeposit';
-  import AccountInfo from './AccountInfo';
+  import AccountUpdate from './AccountUpdate.vue';
+  import AccountDeposit from './AccountDeposit.vue';
+  import AccountInfo from './AccountInfo.vue';
   import {directive as onClickaway} from 'vue-clickaway';
 
   export default {

@@ -10,8 +10,8 @@
 </template>
 
 <script>
-  import SuccessNotification from './SuccessNotification';
-  import ErrorNotification from './ErrorNotification';
+  import SuccessNotification from './SuccessNotification.vue';
+  import ErrorNotification from './ErrorNotification.vue';
 
   export default {
     name: "Notifications.vue",
