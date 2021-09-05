@@ -1,4 +1,14 @@
 # blackJack
+Technologies:
+
+<b>Front:</b>
+vue-js, webpack, bable
+
+<b>Back:</b>
+Spring Boot, Mongo, Redis, Docker
+
+Description:
+
 Card game with computer.
 Features:
 
