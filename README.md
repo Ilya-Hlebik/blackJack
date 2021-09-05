@@ -1,4 +1,12 @@
 # blackJack
+Card game with computer.
+Features:
+Betting
+II
+Game logs
+Sounds
+Animations
+
 
 App flow:
 Main Page
