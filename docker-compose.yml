@@ -1,0 +1,56 @@
+version: '3.3'
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend
+    ports:
+      - '81:81'
+    depends_on:
+      - app
+    networks:
+      - springappnetwork
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8091:8091
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      - RHOST=redis
+      - MONGO_DB_HOSTNAME=mongo
+    links:
+      - mongo
+      - redis
+    networks:
+      - springappnetwork
+  mongo:
+    image: mongo
+    container_name: 'mongo'
+    restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=blackjack
+    volumes:
+      - ./mongo-volume:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+    networks:
+      - springappnetwork
+  redis:
+    image: redis:4.0.5-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    ports:
+      - 6379:6379
+    networks:
+      - springappnetwork
+volumes:
+  redisdata:
+  mongo-volume:
+networks:
+  springappnetwork:

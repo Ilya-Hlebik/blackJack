@@ -1,6 +1,6 @@
 <template>
-  <slide  right   :closeOnNavigation="true">
-    <img v-show="isLogged" class="anonymous-icon" :src="user.userInfo.imageUrl">
+  <slide  right   :closeOnNavigation="true" >
+    <img v-show="isLogged" class="anonymous-icon" id="test228" :src="userIcon">
     <a v-show="!isLogged" href="javaScript:" @click="openAuthorizationForm">
       <span class="bm-item">Login</span>
     </a>
@@ -53,7 +53,10 @@
           ...mapGetters('login', {
             isLogged: 'isLogged',
             user: 'user'
-          })
+          }),
+          userIcon(){
+           return  this.user === null? null:this.user.userInfo.imageUrl;
+          }
         }
     };
 </script>
