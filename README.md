@@ -1,11 +1,16 @@
 # blackJack
 Card game with computer.
 Features:
-Betting
-II
+
+<b>Betting
+
+AI
+
 Game logs
+
 Sounds
-Animations
+
+Animations</b>
 
 
 App flow:
